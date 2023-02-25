@@ -1,0 +1,35 @@
+{
+    "name": "craftydigit/puff",
+    "type": "library",
+    "description": "PHP MVC Framework",
+    "keywords": [
+        "php",
+        "framework",
+        "puff"
+    ],
+    "homepage": "https://github.com/CraftyDigit/puff",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vyacheslav Oleinik",
+            "email": "oleinik.v89@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "CraftyDigit\\Puff\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CraftyDigit\\Puff\\Tests\\": "Tests/"
+        }
+    }
+}
