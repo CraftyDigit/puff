@@ -2,27 +2,30 @@
 
 namespace CraftyDigit\Puff\Template;
 
+use CraftyDigit\Puff\Helper;
+use Exception;
+
 class Template implements TemplateInterface
 {
     /**
-     * @var string
-     */
-    protected string $fullName;
-
-    /**
-     * @var string
-     */
-    protected string $path;
-
-    /**
      * @param string $name
+     * @param string $path
+     * @param string $fullName
      * @param bool $isAdminTemplate
+     * @param Helper $helper
+     * @throws Exception
      */
-    public function __construct(protected string $name, protected bool $isAdminTemplate = false)
+    public function __construct(
+        protected string $name,
+        protected string $path = '',
+        protected string $fullName = '',
+        protected readonly bool $isAdminTemplate = false,
+        protected readonly Helper $helper = new Helper()
+    )
     {
         $innerDirectory = $this->isAdminTemplate ? 'Admin' : 'Front';
-        $this->fullName = $innerDirectory .'/'. $name;
-        $this->path = $this->getTemplatesRootDirectory() . $this->fullName . '.php';
+        $this->fullName = $innerDirectory . DIRECTORY_SEPARATOR . $name;
+        $this->path = $this->getTemplatesDirectory() . $this->fullName . '.php';
     }
 
     /**
@@ -59,9 +62,10 @@ class Template implements TemplateInterface
 
     /**
      * @return string
+     * @throws Exception
      */
-    protected function getTemplatesRootDirectory(): string
+    protected function getTemplatesDirectory(): string
     {
-        return dirname(__DIR__) . '/Templates/';
+        return $this->helper->getPathToDirectory('Templates');
     }
 }

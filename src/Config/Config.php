@@ -2,6 +2,9 @@
 
 namespace CraftyDigit\Puff\Config;
 
+use CraftyDigit\Puff\Helper;
+use Exception;
+
 class Config
 {
     /**
@@ -10,11 +13,12 @@ class Config
     private static ?Config $instance = null;
 
     /**
-     * @var array
+     * @throws Exception
      */
-    private array $parameters = [];
-
-    private function __construct()
+    private function __construct(
+        private array $parameters = [],
+        private readonly Helper $helper = new Helper()
+    )
     {
         $this->loadParameters();
     }
@@ -42,19 +46,17 @@ class Config
 
     /**
      * @return void
+     * @throws Exception
      */
     private function loadParameters(): void
     {
-        $configFile = dirname(__DIR__) . '/puff_config.json';
+        $configFile = $this->helper->getPathToFile('puff_config.json', true);
 
         /* Default config */
-        if (file_exists($configFile) === false) {
+        if ($configFile === false || file_exists($configFile) === false) {
             $configFile = dirname(__FILE__) . '/puff_config.json';
         }  
 
-        if (file_exists($configFile)) {
-            $this->parameters = json_decode(file_get_contents($configFile), 1);
-        }
+        $this->parameters = json_decode(file_get_contents($configFile), 1);
     }
-
 }
