@@ -3,6 +3,7 @@
 namespace CraftyDigit\Puff\Repository;
 
 use CraftyDigit\Puff\Exceptions\FileNotFoundException;
+use CraftyDigit\Puff\Helper;
 use CraftyDigit\Puff\Model\Model;
 
 class JSONRepository implements RepositoryInterface
@@ -16,7 +17,8 @@ class JSONRepository implements RepositoryInterface
     public function __construct(
         private string $dataFileName = '',
         private array $data = [],
-        public bool $autoSave = true
+        public bool $autoSave = true,
+        protected readonly Helper $helper = new Helper()      
     )
     {
         $this->loadData();
@@ -163,6 +165,6 @@ class JSONRepository implements RepositoryInterface
      */
     private function getDataFileFullName(): string
     {
-        return dirname(__DIR__, 2) . '/Data/' . $this->dataFileName . '.json';
+        return $this->helper->getPathToFile('Data/' . $this->dataFileName . '.json'); 
     }
 }
