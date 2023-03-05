@@ -14,6 +14,6 @@ class TemplateManager implements TemplateManagerInterface
      */
     public function getTemplate(string $templateName, bool $isAdminTemplate = false): TemplateInterface
     {
-        return new Template($templateName, $isAdminTemplate);
+        return new Template(name: $templateName, isAdminTemplate: $isAdminTemplate);
     }
 }
