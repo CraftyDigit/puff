@@ -2,6 +2,7 @@
 
 namespace CraftyDigit\Puff;
 
+use CraftyDigit\Puff\Controller\ControllerManager;
 use CraftyDigit\Puff\ErrorReporter\ErrorReporter;
 use CraftyDigit\Puff\ErrorReporter\ErrorReporterInterface;
 use CraftyDigit\Puff\Router\Router;
@@ -11,14 +12,16 @@ use Exception;
 final class Kernel
 {
     /**
-     * @param RouterInterface $router
+     * @param RouterInterface|null $router
      * @param ErrorReporterInterface $errorReporter
      */
     public function __construct(
-        public ErrorReporterInterface $errorReporter = new ErrorReporter(),
-        public RouterInterface $router = new Router()
+        private ?RouterInterface $router = null,
+        private readonly ErrorReporterInterface $errorReporter = new ErrorReporter()
     )
-    {}
+    {
+        $this->router = Router::getInstance();
+    }
 
     /**
      * This method will start the app

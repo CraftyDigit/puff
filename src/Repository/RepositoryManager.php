@@ -10,7 +10,9 @@ class RepositoryManager implements RepositoryManagerInterface
     /**
      * @param string $dataSourceType
      */
-    public function __construct(protected string $dataSourceType = '')
+    public function __construct(
+        protected string $dataSourceType = ''
+    )
     {
         $config = Config::getInstance();
 
@@ -26,10 +28,10 @@ class RepositoryManager implements RepositoryManagerInterface
     {
         $repositoryClass = __NAMESPACE__ .'\\'. strtoupper($this->dataSourceType) . 'Repository';
 
-        if (class_exists($repositoryClass)) {
-            return new $repositoryClass($dataSourceName);
-        } else {
+        if (!class_exists($repositoryClass)) {
             throw new ClassNotFoundException("Repository class '$repositoryClass' not found");
         }
+
+        return new $repositoryClass($dataSourceName);
     }
 }

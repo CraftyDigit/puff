@@ -2,80 +2,80 @@
 
 namespace CraftyDigit\Puff\Controller;
 
+use CraftyDigit\Puff\Attributes\Controller;
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\ErrorReporter\ErrorCode;
+use ReflectionClass;
+use ReflectionException;
 use CraftyDigit\Puff\Exceptions\ClassNotFoundException;
+use CraftyDigit\Puff\Helper;
+use Exception;
 
 class ControllerManager implements ControllerManagerInterface
 {
     /**
-     * @var Config 
+     * @param Config|null $config
      */
-    public Config $config;
-
-    public function __construct()
+    public function __construct(
+        protected array $controllersClasses = [],
+        protected ?Config $config = null,
+        protected readonly Helper $helper = new Helper()
+    )
     {
         $this->config = Config::getInstance();
+        $this->setControllersClasses();
     }
 
     /**
-     * @param string $name
-     * @param bool $isAdmin
-     * @param string $relatedPath
-     * @return ControllerInterface
-     * @throws ClassNotFoundException
+     * @return void
+     * @throws Exception
      */
-    public function getController(string $name, bool $isAdmin = false, string $relatedPath = '/'): ControllerInterface
+    private function setControllersClasses(): void
     {
-        $fullName = $this->constructFullName(...func_get_args());
+        $classes = [];
 
-        if ( class_exists($fullName) ) {
-            /** @var ControllerInterface $controller */
-            $controller = new $fullName();
-        } else {
-            if ($this->config->mode === 'dev') {
-                throw new ClassNotFoundException($fullName);
-            } else {
-                $controller = $this->getErrorController(ErrorCode::Error404, $isAdmin);
-            } 
+        $filesNames = $this->helper->getAppDirectoryFiles('Controllers');
+
+        foreach ($filesNames as $fileName) {
+            $controllerClass = str_replace('.php', '', $fileName);
+            $controllerClass = str_replace(DIRECTORY_SEPARATOR, '\\', $controllerClass);
+            $controllerClass = 'App' . $controllerClass;
+
+            $reflectionClass = new ReflectionClass($controllerClass);
+
+            $attributes = $reflectionClass->getAttributes(Controller::class);
+            
+            if (empty($attributes)) {
+                continue;
+            }
+
+            $classes[$attributes[0]->newInstance()->name] = $controllerClass;
         }
 
-        return $controller;
+        $this->controllersClasses = $classes;
     }
 
     /**
-     * @param ErrorCode $errorCode
-     * @param bool $isAdmin
-     * @return ControllerInterface
-     * @throws ClassNotFoundException
+     * @return array
      */
-    public function getErrorController(ErrorCode $errorCode, bool $isAdmin = false): ControllerInterface
+    public function getControllersClasses(): array
     {
-        $fullName = $this->constructFullName(name: $errorCode->name, isAdmin: $isAdmin);
-
-        if (class_exists($fullName)) {
-            $controller = new $fullName();
-        } else {
-            throw new ClassNotFoundException($fullName);
-        }    
-        
-        return $controller;
+        return $this->controllersClasses;
     }
 
     /**
      * @param string $name
-     * @param bool $isAdmin
-     * @param string $relatedPath
-     * @return string
+     * @return ControllerInterface
+     * @throws ClassNotFoundException
      */
-    private function constructFullName(string $name, bool $isAdmin = false, string $relatedPath = '/'): string 
+    public function getController(string $name): ControllerInterface
     {
-        $fullName = 'App';
-        $fullName .= '\Controllers';
-        $fullName .= $isAdmin ? '\Admin' : '\Front';
-        $fullName .= $relatedPath === '/' ? '' : str_replace('/', '\\', $relatedPath);
-        $fullName .= '\\' . $name . 'Controller';
+        if (!isset($this->controllersClasses[$name])) {
+            throw new ClassNotFoundException("Controller class '$name' not found");
+        }
         
-        return $fullName;
+        $class = $this->controllersClasses[$name];
+
+        return new $class();
     }
 }
