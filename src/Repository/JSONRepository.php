@@ -165,6 +165,6 @@ class JSONRepository implements RepositoryInterface
      */
     private function getDataFileFullName(): string
     {
-        return $this->helper->getPathToFile('Data/' . $this->dataFileName . '.json'); 
+        return $this->helper->getPathToAppFile('Data/' . $this->dataFileName . '.json'); 
     }
 }

@@ -16,8 +16,8 @@ class Config
      * @throws Exception
      */
     private function __construct(
-        private array $parameters = [],
-        private readonly Helper $helper = new Helper()
+        protected array $parameters = [],
+        protected readonly Helper $helper = new Helper()
     )
     {
         $this->loadParameters();
@@ -37,11 +37,11 @@ class Config
 
     /**
      * @param $name
-     * @return mixed
+     * @return mixed|null
      */
     public function __get($name)
     {
-        return $this->parameters[$name];
+        return isset($this->parameters[$name]) ? $this->parameters[$name] : null;
     }
 
     /**
@@ -50,7 +50,7 @@ class Config
      */
     private function loadParameters(): void
     {
-        $configFile = $this->helper->getPathToFile('puff_config.json', true);
+        $configFile = $this->helper->getPathToAppFile('puff_config.json', true);
 
         /* Default config */
         if ($configFile === false || file_exists($configFile) === false) {

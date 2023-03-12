@@ -5,7 +5,7 @@ namespace CraftyDigit\Puff\Exceptions;
 use Exception;
 use Throwable;
 
-class ClassNotFoundException extends Exception
+class RouteNotFoundException extends Exception
 {
     /**
      * @param $message
@@ -13,13 +13,13 @@ class ClassNotFoundException extends Exception
      * @param Throwable|null $previous
      * @param string|null $className
      */
-    public function __construct($message = "", $code = 500, Throwable $previous = null, string $className = null)
+    public function __construct($message = "", $code = 404, Throwable $previous = null, string $route = null)
     {
         if ($message === "") {
-            if ($className === null) {
-                $message = 'Class not found.';
+            if ($route === null) {
+                $message = 'Route not registered.';
             } else {
-                $message = sprintf('Class "%s" could not be found.', $className);
+                $message = sprintf('Route "%s" not registered.', $route);
             }
         }
 

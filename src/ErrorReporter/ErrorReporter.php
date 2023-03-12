@@ -3,24 +3,25 @@
 namespace CraftyDigit\Puff\ErrorReporter;
 
 use CraftyDigit\Puff\Config\Config;
-use CraftyDigit\Puff\Controller\ControllerManager;
-use CraftyDigit\Puff\Controller\ControllerManagerInterface;
+use CraftyDigit\Puff\Enums\AppMode;
 use CraftyDigit\Puff\Exceptions\ClassNotFoundException;
+use CraftyDigit\Puff\Router\Router;
+use CraftyDigit\Puff\Router\RouterInterface;
 use ErrorException;
 
 class ErrorReporter implements ErrorReporterInterface
 {
     /**
-     * @var Config
+     * @param Config|null $config
+     * @param RouterInterface|null $router
      */
-    public Config $config;
-
-    /**
-     * @param ControllerManagerInterface $controllerManager
-     */
-    public function __construct(public ControllerManagerInterface $controllerManager = new ControllerManager())
+    public function __construct(
+        protected ?Config $config = null,
+        protected ?RouterInterface $router = null
+    )
     {
         $this->config = Config::getInstance();
+        $this->router = Router::getInstance();
     }
 
     /**
@@ -32,7 +33,7 @@ class ErrorReporter implements ErrorReporterInterface
     {
         error_reporting(E_ALL);
 
-        if ($this->config->mode === 'prod') {
+        if ( AppMode::from($this->config->mode) === AppMode::PROD) {
             ini_set('display_errors', false);
             ini_set('log_errors', true);
         } else {
@@ -53,12 +54,19 @@ class ErrorReporter implements ErrorReporterInterface
     public function exceptionHandler($e): void
     {
         error_log($e);
-        http_response_code(500);
+        
+        $errorCode = $e->getCode();
+        
+        if ($errorCode === 404) {
+            http_response_code(404);
+        } else {
+            http_response_code(500);
+        }
 
         if (filter_var(ini_get('display_errors'), FILTER_VALIDATE_BOOLEAN)) {
             echo $e;
         } else {
-            $this->controllerManager->getErrorController(ErrorCode::Error500)->render();
+            $this->router->followRouteByName($errorCode === 404 ? 'error_404' : 'error_500');
         }
 
         exit;

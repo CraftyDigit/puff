@@ -11,23 +11,16 @@ use Exception;
 abstract class AbstractController implements ControllerInterface
 {
     /**
-     * @var TemplateInterface
-     */
-    public TemplateInterface $template;
-
-    /**
-     * @param bool $isAdminController
+     * @param TemplateInterface|null $template
      * @param TemplateManagerInterface $templateManager
+     * @throws Exception
      */
     public function __construct(
-        public bool $isAdminController = false,
-        public TemplateManagerInterface $templateManager = new TemplateManager()
+        public ?TemplateInterface $template = null,
+        protected readonly TemplateManagerInterface $templateManager = new TemplateManager()
     )
     {
-        $this->template = $this->templateManager->getTemplate(
-            $this->getDefaultTemplateName(),
-            $this->isAdminController
-        );
+        $this->template = $this->templateManager->getTemplate($this->getDefaultTemplateName());
     }
 
     /**
@@ -36,9 +29,17 @@ abstract class AbstractController implements ControllerInterface
     public function getDefaultTemplateName(): string
     {
         $classFullName = get_class($this);
-        $className = explode('\\',$classFullName)[sizeof(explode('\\',$classFullName)) - 1];
 
-        return strtolower(str_replace('Controller','',$className));
+        $templateName = str_replace('App\\Controllers\\','', $classFullName);
+        $templateName = str_replace('Controller', '', $templateName);
+        $templateName = str_replace('\\', DIRECTORY_SEPARATOR, $templateName);
+        
+        $templateNameArr = explode(DIRECTORY_SEPARATOR, $templateName);
+        $templateNameArr[sizeof($templateNameArr) - 1] = strtolower($templateNameArr[sizeof($templateNameArr) - 1]);
+        
+        $templateName = implode(DIRECTORY_SEPARATOR, $templateNameArr);
+        
+        return $templateName;
     }
 
     /**
@@ -67,11 +68,18 @@ abstract class AbstractController implements ControllerInterface
     }
 
     /**
+     * @param TemplateInterface|null $template
+     * @param array $params
      * @return void
      * @throws Exception
      */
-    public function render(): void
+    public function render(TemplateInterface $template = null, array $params = []): void
     {
-        $this->output();
+        if ($template) {
+            $this->template = $template;
+        }
+        
+        $this->output($params);
     }
+    
 }
