@@ -20,7 +20,7 @@ final class Kernel
         private readonly ErrorReporterInterface $errorReporter = new ErrorReporter()
     )
     {
-        $this->router = Router::getInstance();
+        $this->router = $this->router ?? Router::getInstance();
     }
 
     /**

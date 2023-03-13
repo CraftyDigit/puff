@@ -20,8 +20,8 @@ class ErrorReporter implements ErrorReporterInterface
         protected ?RouterInterface $router = null
     )
     {
-        $this->config = Config::getInstance();
-        $this->router = Router::getInstance();
+        $this->config = $this->config ?? Config::getInstance();
+        $this->router = $this->router ?? Router::getInstance();
     }
 
     /**

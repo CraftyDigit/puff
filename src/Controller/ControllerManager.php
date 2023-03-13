@@ -14,7 +14,10 @@ use Exception;
 class ControllerManager implements ControllerManagerInterface
 {
     /**
+     * @param array $controllersClasses
      * @param Config|null $config
+     * @param Helper $helper
+     * @throws Exception
      */
     public function __construct(
         protected array $controllersClasses = [],
@@ -22,7 +25,7 @@ class ControllerManager implements ControllerManagerInterface
         protected readonly Helper $helper = new Helper()
     )
     {
-        $this->config = Config::getInstance();
+        $this->config = $this->config ?? Config::getInstance();
         $this->setControllersClasses();
     }
 

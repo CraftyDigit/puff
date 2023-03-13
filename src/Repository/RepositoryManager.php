@@ -9,14 +9,15 @@ class RepositoryManager implements RepositoryManagerInterface
 {
     /**
      * @param string $dataSourceType
+     * @param Config|null $config
      */
     public function __construct(
-        protected string $dataSourceType = ''
+        protected string $dataSourceType = '',
+        protected ?Config $config = null
     )
     {
-        $config = Config::getInstance();
-
-        $this->dataSourceType = $dataSourceType ?: $config->data_source_type;
+        $this->config = $this->config ?? Config::getInstance();
+        $this->dataSourceType = $dataSourceType ?: $this->config->data_source_type;
     }
 
     /**
