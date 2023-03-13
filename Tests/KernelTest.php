@@ -35,14 +35,14 @@ final class KernelTest extends TestCase
     {
         $this->errorReporterMock = $this->createMock(ErrorReporter::class);
         $this->routerMock = $this->createMock(Router::class);
-        $this->kernel = new Kernel($this->errorReporterMock, $this->routerMock);
+        $this->kernel = new Kernel($this->routerMock, $this->errorReporterMock);
     }
 
     /**
      * @return void
      * @throws Exception
      */
-    public function testStart()
+    public function testStart(): void
     {
         $this->errorReporterMock->expects($this->once())
             ->method('setHandlers');
