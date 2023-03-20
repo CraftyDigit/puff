@@ -5,12 +5,12 @@ namespace CraftyDigit\Puff\Attributes;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-class Controller
+readonly class Controller
 {
     /**
      * @param string $name
      */
     public function __construct(
-        public readonly string $name
+        public string $name
     ) {}
 }
