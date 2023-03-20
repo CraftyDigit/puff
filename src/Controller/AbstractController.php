@@ -2,25 +2,24 @@
 
 namespace CraftyDigit\Puff\Controller;
 
+use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\Exceptions\FileNotFoundException;
 use CraftyDigit\Puff\Template\TemplateInterface;
-use CraftyDigit\Puff\Template\TemplateManager;
-use CraftyDigit\Puff\Template\TemplateManagerInterface;
 use Exception;
 
 abstract class AbstractController implements ControllerInterface
 {
     /**
+     * @param ContainerExtendedInterface $container
      * @param TemplateInterface|null $template
-     * @param TemplateManagerInterface $templateManager
-     * @throws Exception
      */
     public function __construct(
-        public ?TemplateInterface $template = null,
-        protected readonly TemplateManagerInterface $templateManager = new TemplateManager()
+        protected ContainerExtendedInterface $container,
+        public ?TemplateInterface $template = null
     )
     {
-        $this->template = $this->templateManager->getTemplate($this->getDefaultTemplateName());
+        $this->template = $this->template ??
+            $this->container->get(TemplateInterface::class, ['name' => $this->getDefaultTemplateName()]);
     }
 
     /**
@@ -36,10 +35,8 @@ abstract class AbstractController implements ControllerInterface
         
         $templateNameArr = explode(DIRECTORY_SEPARATOR, $templateName);
         $templateNameArr[sizeof($templateNameArr) - 1] = strtolower($templateNameArr[sizeof($templateNameArr) - 1]);
-        
-        $templateName = implode(DIRECTORY_SEPARATOR, $templateNameArr);
-        
-        return $templateName;
+
+        return implode(DIRECTORY_SEPARATOR, $templateNameArr);
     }
 
     /**
@@ -51,18 +48,18 @@ abstract class AbstractController implements ControllerInterface
     {
         $templatePath = $this->template->getPath();
         $output = '';
-
-        if($this->template->checkIfFileExists()){
-            extract($variables);
-
-            ob_start();
-
-            include $templatePath;
-
-            $output = ob_get_clean();
-        } else {
+        
+        if (!$this->template->checkIfFileExists()) {
             throw new FileNotFoundException("Template file '$templatePath' is not exist!");
         }
+
+        extract($variables);
+
+        ob_start();
+
+        include $templatePath;
+
+        $output = ob_get_clean();
 
         print $output;
     }
@@ -73,7 +70,7 @@ abstract class AbstractController implements ControllerInterface
      * @return void
      * @throws Exception
      */
-    public function render(TemplateInterface $template = null, array $params = []): void
+    public function render(?TemplateInterface $template = null, array $params = []): void
     {
         if ($template) {
             $this->template = $template;

@@ -14,9 +14,9 @@ class Template implements TemplateInterface
      * @throws Exception
      */
     public function __construct(
-        protected readonly string $name,
-        protected string $path = '',
-        protected readonly Helper $helper = new Helper()
+        private readonly string $name,
+        private readonly Helper $helper,
+        private string $path = ''
     )
     {
         $this->path = $this->getTemplatesDirectory() . DIRECTORY_SEPARATOR . $this->name . '.php';

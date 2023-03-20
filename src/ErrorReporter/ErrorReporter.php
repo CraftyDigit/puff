@@ -5,24 +5,20 @@ namespace CraftyDigit\Puff\ErrorReporter;
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Enums\AppMode;
 use CraftyDigit\Puff\Exceptions\ClassNotFoundException;
-use CraftyDigit\Puff\Router\Router;
 use CraftyDigit\Puff\Router\RouterInterface;
 use ErrorException;
 
-class ErrorReporter implements ErrorReporterInterface
+readonly class ErrorReporter implements ErrorReporterInterface
 {
     /**
-     * @param Config|null $config
-     * @param RouterInterface|null $router
+     * @param Config $config
+     * @param RouterInterface $router
      */
     public function __construct(
-        protected ?Config $config = null,
-        protected ?RouterInterface $router = null
+        private Config $config,
+        private RouterInterface $router
     )
-    {
-        $this->config = $this->config ?? Config::getInstance();
-        $this->router = $this->router ?? Router::getInstance();
-    }
+    {}
 
     /**
      * This method enables correct error handling and reporting
@@ -51,7 +47,7 @@ class ErrorReporter implements ErrorReporterInterface
      * @return void
      * @throws ClassNotFoundException
      */
-    public function exceptionHandler($e): void
+   public function exceptionHandler($e): void
     {
         error_log($e);
         

@@ -16,20 +16,26 @@ class Config
      * @throws Exception
      */
     private function __construct(
-        protected array $parameters = [],
-        protected readonly Helper $helper = new Helper()
+        private readonly Helper $helper,
+        private array $parameters = []
     )
     {
         $this->loadParameters();
     }
 
     /**
+     * @param Helper $helper
+     * @param array $parameters
      * @return Config
+     * @throws Exception
      */
-    public static function getInstance(): Config
+    public static function getInstance(
+        Helper $helper,
+        array $parameters = []
+    ): Config
     {
         if (self::$instance == null) {
-            self::$instance = new Config();
+            self::$instance = new Config(...func_get_args());
         }
 
         return self::$instance;

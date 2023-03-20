@@ -3,30 +3,49 @@
 namespace CraftyDigit\Puff\Controller;
 
 use CraftyDigit\Puff\Attributes\Controller;
-use CraftyDigit\Puff\Config\Config;
-use CraftyDigit\Puff\ErrorReporter\ErrorCode;
+use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use ReflectionClass;
-use ReflectionException;
 use CraftyDigit\Puff\Exceptions\ClassNotFoundException;
 use CraftyDigit\Puff\Helper;
 use Exception;
 
 class ControllerManager implements ControllerManagerInterface
 {
+    private static ?ControllerManager $instance = null;
+
     /**
-     * @param array $controllersClasses
-     * @param Config|null $config
+     * @param ContainerExtendedInterface $container
      * @param Helper $helper
+     * @param array $controllersClasses
      * @throws Exception
      */
-    public function __construct(
-        protected array $controllersClasses = [],
-        protected ?Config $config = null,
-        protected readonly Helper $helper = new Helper()
+    private function __construct(
+        private readonly ContainerExtendedInterface $container,
+        private readonly Helper $helper,
+        private array $controllersClasses = [],
     )
     {
-        $this->config = $this->config ?? Config::getInstance();
         $this->setControllersClasses();
+    }
+
+    /**
+     * @param ContainerExtendedInterface $container
+     * @param Helper $helper
+     * @param array $controllersClasses
+     * @return ControllerManager
+     * @throws Exception
+     */
+    public static function getInstance(
+        ContainerExtendedInterface $container,
+        Helper $helper,
+        array $controllersClasses = []
+    ): ControllerManager
+    {
+        if (self::$instance == null) {
+            self::$instance = new ControllerManager(...func_get_args());
+        }
+
+        return self::$instance;
     }
 
     /**
@@ -79,6 +98,6 @@ class ControllerManager implements ControllerManagerInterface
         
         $class = $this->controllersClasses[$name];
 
-        return new $class();
+        return $this->container->get($class);
     }
 }
