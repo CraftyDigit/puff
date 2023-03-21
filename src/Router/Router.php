@@ -2,6 +2,7 @@
 
 namespace CraftyDigit\Puff\Router;
 
+use CraftyDigit\Puff\Attributes\Singleton;
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\Controller\ControllerManagerInterface;
@@ -16,13 +17,9 @@ use ReflectionMethod;
 use ReflectionException;
 use Exception;
 
+#[Singleton]
 class Router implements RouterInterface
 {
-    /**
-     * @var Router|null 
-     */
-    private static ?Router $instance = null;
-
     /**
      * @param Config $config
      * @param ControllerManagerInterface $controllerManager
@@ -30,7 +27,7 @@ class Router implements RouterInterface
      * @param array $routes
      * @throws ReflectionException
      */
-    private function __construct(
+    public function __construct(
         private readonly Config $config,
         private readonly ControllerManagerInterface $controllerManager,
         private readonly ContainerExtendedInterface $container,
@@ -38,28 +35,6 @@ class Router implements RouterInterface
     )
     {
         $this->registerControllersRoutes();
-    }
-
-    /**
-     * @param Config $config
-     * @param ControllerManagerInterface $controllerManager
-     * @param ContainerExtendedInterface $container
-     * @param array $routes
-     * @return Router
-     * @throws ReflectionException
-     */
-    public static function getInstance(
-        Config $config,
-        ControllerManagerInterface $controllerManager,
-        ContainerExtendedInterface $container,
-        array $routes = []
-    ): Router
-    {
-        if (self::$instance == null) {
-            self::$instance = new Router(...func_get_args());
-        }
-
-        return self::$instance;
     }
 
     /**

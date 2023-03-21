@@ -2,45 +2,24 @@
 
 namespace CraftyDigit\Puff\Config;
 
+use CraftyDigit\Puff\Attributes\Singleton;
 use CraftyDigit\Puff\Helper;
 use Exception;
 
+#[Singleton]
 class Config
 {
     /**
-     * @var Config|null
-     */
-    private static ?Config $instance = null;
-
-    /**
      * @throws Exception
      */
-    private function __construct(
+    public function __construct(
         private readonly Helper $helper,
         private array $parameters = []
     )
     {
         $this->loadParameters();
     }
-
-    /**
-     * @param Helper $helper
-     * @param array $parameters
-     * @return Config
-     * @throws Exception
-     */
-    public static function getInstance(
-        Helper $helper,
-        array $parameters = []
-    ): Config
-    {
-        if (self::$instance == null) {
-            self::$instance = new Config(...func_get_args());
-        }
-
-        return self::$instance;
-    }
-
+    
     /**
      * @param $name
      * @return mixed|null

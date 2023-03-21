@@ -3,49 +3,29 @@
 namespace CraftyDigit\Puff\Controller;
 
 use CraftyDigit\Puff\Attributes\Controller;
+use CraftyDigit\Puff\Attributes\Singleton;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use ReflectionClass;
 use CraftyDigit\Puff\Exceptions\ClassNotFoundException;
 use CraftyDigit\Puff\Helper;
 use Exception;
 
+#[Singleton]
 class ControllerManager implements ControllerManagerInterface
 {
-    private static ?ControllerManager $instance = null;
-
     /**
      * @param ContainerExtendedInterface $container
      * @param Helper $helper
      * @param array $controllersClasses
      * @throws Exception
      */
-    private function __construct(
+    public function __construct(
         private readonly ContainerExtendedInterface $container,
         private readonly Helper $helper,
         private array $controllersClasses = [],
     )
     {
         $this->setControllersClasses();
-    }
-
-    /**
-     * @param ContainerExtendedInterface $container
-     * @param Helper $helper
-     * @param array $controllersClasses
-     * @return ControllerManager
-     * @throws Exception
-     */
-    public static function getInstance(
-        ContainerExtendedInterface $container,
-        Helper $helper,
-        array $controllersClasses = []
-    ): ControllerManager
-    {
-        if (self::$instance == null) {
-            self::$instance = new ControllerManager(...func_get_args());
-        }
-
-        return self::$instance;
     }
 
     /**

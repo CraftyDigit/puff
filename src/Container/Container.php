@@ -2,6 +2,7 @@
 
 namespace CraftyDigit\Puff\Container;
 
+use CraftyDigit\Puff\Attributes\Singleton;
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Exceptions\Container\ContainerException;
 use CraftyDigit\Puff\Exceptions\Container\ServiceNotFoundException;
@@ -26,7 +27,7 @@ class Container implements ContainerExtendedInterface
      */
     private function __construct(
         private array $services = [],
-        private array $instances = [],
+        public array $instances = [],
         private ?Config $config = null
     )
     {
@@ -135,6 +136,11 @@ class Container implements ContainerExtendedInterface
      */
     private function callClass(string $name, array $params = []): mixed
     {
+        if ($name === Container::class) {
+            // Service is a container itself
+            return $this;
+        }
+        
         if (array_key_exists($name, $this->instances)) {
             // Service is a singleton class and has already been instantiated. Return the instance.
             return $this->instances[$name];
@@ -142,11 +148,15 @@ class Container implements ContainerExtendedInterface
         
         $reflector = new ReflectionClass($name);
         
+        $isSingleton = !!$reflector->getAttributes(Singleton::class);
+        
         if (!$reflector->isInstantiable()) {
-            // Service can"t be instantiated or '__constructor' method is not public
+            // Service can't be instantiated or '__constructor' method is not public
             
             if ($reflector->hasMethod('getInstance')) {
                 // Service is a singleton class and has not been instantiated yet
+                $isSingleton = true;
+                
                 $constructor = $reflector->getMethod('getInstance');
             }
         }
@@ -164,18 +174,19 @@ class Container implements ContainerExtendedInterface
         }
 
         $dependencies = $this->resolveMethodDependencies($constructor, $name, $params);
-
+                
         if ($constructor->getName() === 'getInstance') {
-            // Service is a singleton and has not been instantiated yet.
-            // Instantiate it with params and save it in the instances array.
-            $this->instances[$name] = $constructor->invoke(null, ...$dependencies);
-            
-            return $this->instances[$name];
+            $newInstance = $constructor->invoke(null, ...$dependencies);
         } else {
-            // Service is not a singleton and has not been instantiated yet.
-            // Instantiate it with params.
-            return $reflector->newInstanceArgs($dependencies);
+            $newInstance = $reflector->newInstanceArgs($dependencies);
         }
+        
+        if ($isSingleton) {
+            // Service is a singleton. Save it's instance.
+            $this->instances[$name] = $newInstance;
+        }
+
+        return $newInstance;
     }
 
     /**
