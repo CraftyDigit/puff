@@ -3,36 +3,38 @@
 namespace CraftyDigit\Puff\Repository;
 
 use CraftyDigit\Puff\Config\Config;
+use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\Exceptions\ClassNotFoundException;
 
 class RepositoryManager implements RepositoryManagerInterface
 {
     /**
+     * @param Config $config
+     * @param ContainerExtendedInterface $container
      * @param string $dataSourceType
-     * @param Config|null $config
      */
     public function __construct(
-        protected string $dataSourceType = '',
-        protected ?Config $config = null
+        private readonly Config $config,
+        private readonly ContainerExtendedInterface $container,
+        private string $dataSourceType = '',
     )
     {
-        $this->config = $this->config ?? Config::getInstance();
-        $this->dataSourceType = $dataSourceType ?: $this->config->data_source_type;
+        $this->dataSourceType = $this->dataSourceType ?: $this->config->data_source_type;
     }
 
     /**
      * @param string $dataSourceName
-     * @return RepositoryInterface
+     * @return AbstractRepository
      * @throws ClassNotFoundException
      */
-    public function getRepository(string $dataSourceName): RepositoryInterface
+    public function getRepository(string $dataSourceName): AbstractRepository
     {
         $repositoryClass = __NAMESPACE__ .'\\'. strtoupper($this->dataSourceType) . 'Repository';
 
         if (!class_exists($repositoryClass)) {
             throw new ClassNotFoundException("Repository class '$repositoryClass' not found");
         }
-
-        return new $repositoryClass($dataSourceName);
+        
+        return $this->container->get($repositoryClass, ['dataSourceName' => $dataSourceName]);
     }
 }

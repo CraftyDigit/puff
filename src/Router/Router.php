@@ -2,54 +2,39 @@
 
 namespace CraftyDigit\Puff\Router;
 
+use CraftyDigit\Puff\Attributes\Singleton;
 use CraftyDigit\Puff\Config\Config;
-use CraftyDigit\Puff\Controller\ControllerManager;
+use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\Controller\ControllerManagerInterface;
 use CraftyDigit\Puff\Attributes\Route;
 use CraftyDigit\Puff\Enums\AppMode;
 use CraftyDigit\Puff\Enums\RequestMethod;
 use CraftyDigit\Puff\Exceptions\RouteNotFoundException;
-use CraftyDigit\Puff\Helper;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionException;
 use Exception;
 
+#[Singleton]
 class Router implements RouterInterface
 {
     /**
-     * @var Router|null 
-     */
-    private static ?Router $instance = null;
-
-    /**
-     * @param array $routes
-     * @param Config|null $config
+     * @param Config $config
      * @param ControllerManagerInterface $controllerManager
-     * @param Helper $helper
-     * @throws Exception
+     * @param ContainerExtendedInterface $container
+     * @param array $routes
+     * @throws ReflectionException
      */
-    private function __construct(
+    public function __construct(
+        private readonly Config $config,
+        private readonly ControllerManagerInterface $controllerManager,
+        private readonly ContainerExtendedInterface $container,
         public array $routes = [],
-        protected ?Config $config = null,
-        protected readonly ControllerManagerInterface $controllerManager = new ControllerManager(),
-        protected readonly Helper $helper = new Helper()
     )
     {
-        $this->config = Config::getInstance();
         $this->registerControllersRoutes();
-    }
-
-    /**
-     * @return Router
-     */
-    public static function getInstance(): Router
-    {
-        if (self::$instance == null) {
-            self::$instance = new Router();
-        }
-
-        return self::$instance;
     }
 
     /**
@@ -98,6 +83,9 @@ class Router implements RouterInterface
     /**
      * @param array $requestParams
      * @return void
+     * @throws RouteNotFoundException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws Exception
      */
     public function followRoute(array $requestParams = []): void
@@ -115,7 +103,7 @@ class Router implements RouterInterface
             $controller = $this->routes[$requestMethod->value][$path]['controller'];
             $method = $this->routes[$requestMethod->value][$path]['method'];
             
-            $controller = new $controller();
+            $controller = $this->container->get($controller);
             
             $controller->$method();
         } else {
@@ -152,7 +140,7 @@ class Router implements RouterInterface
         $controller = $route['controller'];
         $method = $route['method'];
         
-        $controller = new $controller();
+        $controller = $this->container->get($controller); 
         
         $controller->$method();
     }
@@ -220,9 +208,10 @@ class Router implements RouterInterface
 
     /**
      * @param string $name
-     * @param array|null $requestParams
+     * @param array $requestParams
      * @return void
      * @throws RouteNotFoundException
+     * @throws Exception
      */
     public function redirectToRouteByName(string $name, array $requestParams = []): void
     {

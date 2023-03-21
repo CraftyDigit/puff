@@ -6,12 +6,12 @@ use Attribute;
 use CraftyDigit\Puff\Enums\RequestMethod;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class Route
+readonly class Route
 {
     /**
      * @var RequestMethod 
      */
-    public readonly RequestMethod $requestMethod;
+    public RequestMethod $requestMethod;
 
     /**
      * @param string $path
@@ -20,10 +20,10 @@ class Route
      * @param bool $isPublic
      */
     public function __construct(
-        public readonly string $path,
-        public readonly string $name,
+        public string  $path,
+        public string   $name,
         RequestMethod | string $requestMethod = RequestMethod::GET,
-        public readonly bool $isPublic = true
+        public bool $isPublic = true
     )
     {
         $this->requestMethod = $requestMethod instanceof RequestMethod ?

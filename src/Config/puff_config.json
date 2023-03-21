@@ -1,4 +1,15 @@
 {
   "mode": "dev",
-  "data_source_type": "json"
+  "data_source_type": "json",
+  "di_container": {
+    "services": {
+      "CraftyDigit\\Puff\\Container\\ContainerExtendedInterface": "CraftyDigit\\Puff\\Container\\Container",
+      "CraftyDigit\\Puff\\Controller\\ControllerManagerInterface": "CraftyDigit\\Puff\\Controller\\ControllerManager",
+      "CraftyDigit\\Puff\\ErrorReporter\\ErrorReporterInterface": "CraftyDigit\\Puff\\ErrorReporter\\ErrorReporter",
+      "CraftyDigit\\Puff\\Model\\ModelInterface": "CraftyDigit\\Puff\\Model\\Model",
+      "CraftyDigit\\Puff\\Repository\\RepositoryManagerInterface": "CraftyDigit\\Puff\\Repository\\RepositoryManager",
+      "CraftyDigit\\Puff\\Router\\RouterInterface": "CraftyDigit\\Puff\\Router\\Router",
+      "CraftyDigit\\Puff\\Template\\TemplateInterface": "CraftyDigit\\Puff\\Template\\Template"
+    }
+  }
 }

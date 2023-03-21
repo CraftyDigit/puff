@@ -6,7 +6,7 @@ interface RepositoryManagerInterface
 {
     /**
      * @param string $dataSourceName
-     * @return RepositoryInterface
+     * @return AbstractRepository
      */
-    public function getRepository(string $dataSourceName): RepositoryInterface;
+    public function getRepository(string $dataSourceName): AbstractRepository;
 }

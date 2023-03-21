@@ -2,25 +2,33 @@
 
 namespace CraftyDigit\Puff\Repository;
 
+use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\Exceptions\FileNotFoundException;
 use CraftyDigit\Puff\Helper;
 use CraftyDigit\Puff\Model\Model;
+use CraftyDigit\Puff\Model\ModelInterface;
+use Exception;
 
-class JSONRepository implements RepositoryInterface
+class JSONRepository extends AbstractRepository implements RepositoryInterface 
 {
     /**
-     * @param string $dataFileName Name of JSON file containing data
-     * @param array $data Array of items loaded from JSON file
+     * @param ContainerExtendedInterface $container
+     * @param Helper $helper
+     * @param string $dataSourceName
+     * @param array $data
      * @param bool $autoSave
      * @throws FileNotFoundException
      */
     public function __construct(
-        private string $dataFileName = '',
-        private array $data = [],
-        public bool $autoSave = true,
-        protected readonly Helper $helper = new Helper()      
+        private readonly ContainerExtendedInterface $container,
+        private readonly Helper                     $helper,
+        string                                      $dataSourceName,
+        private array                               $data = [],
+        public bool                                 $autoSave = true
     )
     {
+        $this->container->callMethod(parent::class, '__construct', ['dataSourceName' => $dataSourceName] ,$this);
+        
         $this->loadData();
     }
 
@@ -32,7 +40,7 @@ class JSONRepository implements RepositoryInterface
         $items = [];
 
         foreach ($this->data['items'] as $dataItem) {
-            $items[] = new Model($dataItem);
+            $items[] = $this->container->get(ModelInterface::class, ['data' => $dataItem]);
         }
 
         return $items;
@@ -46,7 +54,7 @@ class JSONRepository implements RepositoryInterface
     {
         foreach ($this->data['items'] as $dataItem) {
             if ($dataItem['id'] == $itemId) {
-                return new Model($dataItem);
+                return $this->container->get(ModelInterface::class, ['data' => $dataItem]);
             }
         }
 
@@ -74,12 +82,13 @@ class JSONRepository implements RepositoryInterface
             $dataItem[$field] = '';
         }
 
-        return new Model($dataItem);
+        return $this->container->get(ModelInterface::class, ['data' => $dataItem]);
     }
 
     /**
      * @param Model $item
      * @return void
+     * @throws Exception
      */
     public function updateItem(Model $item): void
     {
@@ -97,6 +106,7 @@ class JSONRepository implements RepositoryInterface
     /**
      * @param Model $item
      * @return Model
+     * @throws Exception
      */
     public function addItem(Model $item): Model
     {
@@ -115,12 +125,13 @@ class JSONRepository implements RepositoryInterface
             $this->saveData();
         }
 
-        return new Model($newItemData);
+        return $this->container->get(ModelInterface::class, ['data' => $newItemData]);
     }
 
     /**
      * @param Model $item
      * @return void
+     * @throws Exception
      */
     public function deleteItem(Model $item): void
     {
@@ -137,6 +148,7 @@ class JSONRepository implements RepositoryInterface
 
     /**
      * @return void
+     * @throws Exception
      */
     public function saveData(): void
     {
@@ -148,23 +160,25 @@ class JSONRepository implements RepositoryInterface
     /**
      * @return void
      * @throws FileNotFoundException
+     * @throws Exception
      */
     public function loadData(): void
     {
         $file = $this->getDataFileFullName();
 
-        if (file_exists($file)) {
-            $this->data = json_decode(file_get_contents($file), 1);
-        } else {
+        if (!file_exists($file)) {
             throw new FileNotFoundException("JSON data file '$file' does not exist.");
         }
+        
+        $this->data = json_decode(file_get_contents($file), 1);
     }
 
     /**
      * @return string
+     * @throws Exception
      */
     private function getDataFileFullName(): string
     {
-        return $this->helper->getPathToAppFile('Data/' . $this->dataFileName . '.json'); 
+        return $this->helper->getPathToAppFile('Data/' . $this->dataSourceName . '.json'); 
     }
 }
