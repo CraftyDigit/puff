@@ -6,18 +6,8 @@ use Psr\Container\ContainerInterface;
 
 interface ContainerExtendedInterface extends ContainerInterface
 {
-    /**
-     * @param string $id
-     * @param array $params
-     * @return mixed
-     */
     public function get(string $id, array $params = []): mixed;
 
-    /**
-     * @param string $id
-     * @param string $name
-     * @return void
-     */
     public function set(string $id, string $name): void;
 
     /**
@@ -26,12 +16,6 @@ interface ContainerExtendedInterface extends ContainerInterface
      *  - you need to call a method of a class that is not a service;
      *  - you need to call a parent constructor method from a child class constructor method;
      *  - etc.
-     * 
-     * @param string $class
-     * @param string $method
-     * @param array $params
-     * @param string|object|null $target
-     * @return mixed
      */
     public function callMethod(
         string $class,

@@ -1,24 +1,16 @@
 <?php
 
-namespace CraftyDigit\Puff\Repository;
+namespace CraftyDigit\Puff\DataHandler\NonORM\JSON;
 
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
+use CraftyDigit\Puff\DataHandler\NonORM\AbstractNonORMRepository;
 use CraftyDigit\Puff\Exceptions\FileNotFoundException;
 use CraftyDigit\Puff\Helper;
-use CraftyDigit\Puff\Model\Model;
-use CraftyDigit\Puff\Model\ModelInterface;
-use Exception;
+use CraftyDigit\Puff\SimpleModel\SimpleModel;
+use CraftyDigit\Puff\SimpleModel\SimpleModelInterface;
 
-class JSONRepository extends AbstractRepository implements RepositoryInterface 
+class JSONRepository extends AbstractNonORMRepository 
 {
-    /**
-     * @param ContainerExtendedInterface $container
-     * @param Helper $helper
-     * @param string $dataSourceName
-     * @param array $data
-     * @param bool $autoSave
-     * @throws FileNotFoundException
-     */
     public function __construct(
         private readonly ContainerExtendedInterface $container,
         private readonly Helper                     $helper,
@@ -32,47 +24,34 @@ class JSONRepository extends AbstractRepository implements RepositoryInterface
         $this->loadData();
     }
 
-    /**
-     * @return array
-     */
     public function getAll(): array
     {
         $items = [];
 
         foreach ($this->data['items'] as $dataItem) {
-            $items[] = $this->container->get(ModelInterface::class, ['data' => $dataItem]);
+            $items[] = $this->container->get(SimpleModelInterface::class, ['data' => $dataItem]);
         }
 
         return $items;
     }
 
-    /**
-     * @param int $itemId
-     * @return Model|null
-     */
-    public function getOneById(int $itemId): ?Model
+    public function getOneById(int $itemId): ?SimpleModel
     {
         foreach ($this->data['items'] as $dataItem) {
             if ($dataItem['id'] == $itemId) {
-                return $this->container->get(ModelInterface::class, ['data' => $dataItem]);
+                return $this->container->get(SimpleModelInterface::class, ['data' => $dataItem]);
             }
         }
 
         return null;
     }
 
-    /**
-     * @return array
-     */
     public function getScheme(): array
     {
         return array_keys($this->data['items'][0]);
     }
 
-    /**
-     * @return Model
-     */
-    public function getBlankItem(): Model
+    public function getBlankItem(): SimpleModel
     {
         $scheme = $this->getScheme();
 
@@ -82,15 +61,10 @@ class JSONRepository extends AbstractRepository implements RepositoryInterface
             $dataItem[$field] = '';
         }
 
-        return $this->container->get(ModelInterface::class, ['data' => $dataItem]);
+        return $this->container->get(SimpleModelInterface::class, ['data' => $dataItem]);
     }
 
-    /**
-     * @param Model $item
-     * @return void
-     * @throws Exception
-     */
-    public function updateItem(Model $item): void
+    public function updateItem(SimpleModel $item): void
     {
         for ($i = 0; $i < sizeof($this->data['items']); $i++) {
             if ($this->data['items'][$i]['id'] == $item->id) {
@@ -103,12 +77,7 @@ class JSONRepository extends AbstractRepository implements RepositoryInterface
         }
     }
 
-    /**
-     * @param Model $item
-     * @return Model
-     * @throws Exception
-     */
-    public function addItem(Model $item): Model
+    public function addItem(SimpleModel $item): SimpleModel
     {
         $maxId = 0;
 
@@ -125,15 +94,10 @@ class JSONRepository extends AbstractRepository implements RepositoryInterface
             $this->saveData();
         }
 
-        return $this->container->get(ModelInterface::class, ['data' => $newItemData]);
+        return $this->container->get(SimpleModelInterface::class, ['data' => $newItemData]);
     }
 
-    /**
-     * @param Model $item
-     * @return void
-     * @throws Exception
-     */
-    public function deleteItem(Model $item): void
+    public function deleteItem(SimpleModel $item): void
     {
         for ($i = 0; $i < sizeof($this->data['items']); $i++) {
             if ($this->data['items'][$i]['id'] == $item->id) {
@@ -146,10 +110,6 @@ class JSONRepository extends AbstractRepository implements RepositoryInterface
         }
     }
 
-    /**
-     * @return void
-     * @throws Exception
-     */
     public function saveData(): void
     {
         $file = $this->getDataFileFullName();
@@ -157,11 +117,6 @@ class JSONRepository extends AbstractRepository implements RepositoryInterface
         file_put_contents($file, json_encode($this->data));
     }
 
-    /**
-     * @return void
-     * @throws FileNotFoundException
-     * @throws Exception
-     */
     public function loadData(): void
     {
         $file = $this->getDataFileFullName();
@@ -173,12 +128,8 @@ class JSONRepository extends AbstractRepository implements RepositoryInterface
         $this->data = json_decode(file_get_contents($file), 1);
     }
 
-    /**
-     * @return string
-     * @throws Exception
-     */
     private function getDataFileFullName(): string
     {
-        return $this->helper->getPathToAppFile('Data/' . $this->dataSourceName . '.json'); 
+        return $this->helper->getPathToAppFile('Data/json/' . $this->dataSourceName . '.json'); 
     }
 }

@@ -4,44 +4,46 @@ namespace CraftyDigit\Puff\Config;
 
 use CraftyDigit\Puff\Attributes\Singleton;
 use CraftyDigit\Puff\Helper;
-use Exception;
 
 #[Singleton]
 class Config
 {
-    /**
-     * @throws Exception
-     */
     public function __construct(
         private readonly Helper $helper,
         private array $parameters = []
     )
     {
-        $this->loadParameters();
+        $this->loadConfig();
     }
     
-    /**
-     * @param $name
-     * @return mixed|null
-     */
     public function __get($name)
     {
         return $this->parameters[$name] ?? null;
     }
-
-    /**
-     * @return void
-     * @throws Exception
-     */
-    private function loadParameters(): void
+    
+    private function loadConfig(): void
     {
-        /* Custom config */
-        $configFile = $this->helper->getPathToAppFile('puff_config.json', true);
-        
-        /* Default config */
         $defaultConfigFile = dirname(__FILE__) . '/puff_config.json';
+        
+        $this->loadParametersFromFile($defaultConfigFile);
+    }
 
-        $this->parameters = file_exists($configFile) ? json_decode(file_get_contents($configFile), 1) : [];
-        $this->parameters += json_decode(file_get_contents($defaultConfigFile), 1);
+    private function loadParametersFromFile(string $fileFullName): void
+    {
+        if (!file_exists($fileFullName)) {
+            return;
+        }
+        
+        $parameters = json_decode(file_get_contents($fileFullName), 1);
+        
+        $this->parameters = $parameters + $this->parameters;
+
+        $additionalConfigFiles = $parameters['additional_config_files'] ?? [];
+        
+        foreach ($additionalConfigFiles as $additionalConfigFileName) {
+            $additionalConfigFileFullName = $this->helper->getPathToAppFile($additionalConfigFileName . '.json', true);
+            
+            $this->loadParametersFromFile($additionalConfigFileFullName);
+        }
     }
 }

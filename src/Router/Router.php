@@ -10,23 +10,13 @@ use CraftyDigit\Puff\Attributes\Route;
 use CraftyDigit\Puff\Enums\AppMode;
 use CraftyDigit\Puff\Enums\RequestMethod;
 use CraftyDigit\Puff\Exceptions\RouteNotFoundException;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
 use ReflectionMethod;
-use ReflectionException;
 use Exception;
 
 #[Singleton]
 class Router implements RouterInterface
 {
-    /**
-     * @param Config $config
-     * @param ControllerManagerInterface $controllerManager
-     * @param ContainerExtendedInterface $container
-     * @param array $routes
-     * @throws ReflectionException
-     */
     public function __construct(
         private readonly Config $config,
         private readonly ControllerManagerInterface $controllerManager,
@@ -37,10 +27,6 @@ class Router implements RouterInterface
         $this->registerControllersRoutes();
     }
 
-    /**
-     * @return void
-     * @throws ReflectionException
-     */
     protected function registerControllersRoutes(): void
     {
         $controllers = $this->controllerManager->getControllersClasses();
@@ -50,11 +36,6 @@ class Router implements RouterInterface
         }
     }
 
-    /**
-     * @param string $controllerClass
-     * @return void
-     * @throws ReflectionException
-     */
     protected function registerControllerRoutes(string $controllerClass): void
     {
         $reflectionClass = new ReflectionClass($controllerClass);
@@ -80,14 +61,6 @@ class Router implements RouterInterface
         }
     }
 
-    /**
-     * @param array $requestParams
-     * @return void
-     * @throws RouteNotFoundException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws Exception
-     */
     public function followRoute(array $requestParams = []): void
     {
         $path = explode('?', $_SERVER['REQUEST_URI'])[0];
@@ -115,12 +88,6 @@ class Router implements RouterInterface
         }
     }
 
-    /**
-     * @param string $name
-     * @param array $requestParams
-     * @return void
-     * @throws Exception
-     */
     public function followRouteByName(string $name, array $requestParams = []): void
     {
         $route = $this->getRouteByName($name);
@@ -145,10 +112,6 @@ class Router implements RouterInterface
         $controller->$method();
     }
 
-    /**
-     * @param string $name
-     * @return array|null
-     */
     protected function getRouteByName(string $name): ?array
     {
         foreach ($this->routes as $method => $routes) {
@@ -162,13 +125,6 @@ class Router implements RouterInterface
         return null;
     }
 
-    /**
-     * @param string $path
-     * @param array $requestParams
-     * @param RequestMethod $method
-     * @return void
-     * @throws Exception
-     */
     public function redirect(string $path, array $requestParams = [], RequestMethod $method = RequestMethod::GET): void
     {
         if ($method === RequestMethod::GET) {
@@ -206,13 +162,6 @@ class Router implements RouterInterface
         throw new Exception('Invalid redirect method specified.');
     }
 
-    /**
-     * @param string $name
-     * @param array $requestParams
-     * @return void
-     * @throws RouteNotFoundException
-     * @throws Exception
-     */
     public function redirectToRouteByName(string $name, array $requestParams = []): void
     {
         $route = $this->getRouteByName($name);
@@ -231,12 +180,6 @@ class Router implements RouterInterface
         $this->redirect($redirectPath, $requestParams, $route['requestMethod']);
     }
 
-    /**
-     * @param array $params
-     * @param RequestMethod $requestMethod
-     * @return void
-     * @throws Exception
-     */
     private function addParamsToGlobalRequestParams(
         array $params, RequestMethod $requestMethod = RequestMethod::GET): void
     {

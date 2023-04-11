@@ -5,14 +5,9 @@ namespace CraftyDigit\Puff\Controller;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\Exceptions\FileNotFoundException;
 use CraftyDigit\Puff\Template\TemplateInterface;
-use Exception;
 
 abstract class AbstractController implements ControllerInterface
 {
-    /**
-     * @param ContainerExtendedInterface $container
-     * @param TemplateInterface|null $template
-     */
     public function __construct(
         protected ContainerExtendedInterface $container,
         public ?TemplateInterface $template = null
@@ -22,9 +17,6 @@ abstract class AbstractController implements ControllerInterface
             $this->container->get(TemplateInterface::class, ['name' => $this->getDefaultTemplateName()]);
     }
 
-    /**
-     * @return string
-     */
     public function getDefaultTemplateName(): string
     {
         $classFullName = get_class($this);
@@ -39,11 +31,6 @@ abstract class AbstractController implements ControllerInterface
         return implode(DIRECTORY_SEPARATOR, $templateNameArr);
     }
 
-    /**
-     * @param array $variables
-     * @return void
-     * @throws Exception
-     */
     protected function output(array $variables = []): void
     {
         $templatePath = $this->template->getPath();
@@ -64,12 +51,6 @@ abstract class AbstractController implements ControllerInterface
         print $output;
     }
 
-    /**
-     * @param TemplateInterface|null $template
-     * @param array $params
-     * @return void
-     * @throws Exception
-     */
     public function render(?TemplateInterface $template = null, array $params = []): void
     {
         if ($template) {

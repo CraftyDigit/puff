@@ -4,16 +4,11 @@ namespace CraftyDigit\Puff\ErrorReporter;
 
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Enums\AppMode;
-use CraftyDigit\Puff\Exceptions\ClassNotFoundException;
 use CraftyDigit\Puff\Router\RouterInterface;
 use ErrorException;
 
 readonly class ErrorReporter implements ErrorReporterInterface
 {
-    /**
-     * @param Config $config
-     * @param RouterInterface $router
-     */
     public function __construct(
         private Config $config,
         private RouterInterface $router
@@ -22,8 +17,6 @@ readonly class ErrorReporter implements ErrorReporterInterface
 
     /**
      * This method enables correct error handling and reporting
-     *
-     * @return void
      */
     public function setHandlers(): void
     {
@@ -42,12 +35,7 @@ readonly class ErrorReporter implements ErrorReporterInterface
         register_shutdown_function([$this, 'criticalErrorHandler']);
     }
 
-    /**
-     * @param $e
-     * @return void
-     * @throws ClassNotFoundException
-     */
-   public function exceptionHandler($e): void
+    public function exceptionHandler($e): void
     {
         error_log($e);
         
@@ -68,24 +56,12 @@ readonly class ErrorReporter implements ErrorReporterInterface
         exit;
     }
 
-    /**
-     * @param $level
-     * @param $message
-     * @param string $file
-     * @param int $line
-     * @return void
-     * @throws ClassNotFoundException
-     */
     public function errorHandler($level, $message, string $file = '', int $line = 0): void
     {
         $e = new ErrorException($message, 0, $level, $file, $line);
         $this->exceptionHandler($e);
     }
 
-    /**
-     * @return void
-     * @throws ClassNotFoundException
-     */
     public function criticalErrorHandler(): void
     {
         $error = error_get_last();

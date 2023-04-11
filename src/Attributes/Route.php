@@ -8,17 +8,8 @@ use CraftyDigit\Puff\Enums\RequestMethod;
 #[Attribute(Attribute::TARGET_METHOD)]
 readonly class Route
 {
-    /**
-     * @var RequestMethod 
-     */
     public RequestMethod $requestMethod;
 
-    /**
-     * @param string $path
-     * @param string $name
-     * @param RequestMethod|string $requestMethod
-     * @param bool $isPublic
-     */
     public function __construct(
         public string  $path,
         public string   $name,

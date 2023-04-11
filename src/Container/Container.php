@@ -6,25 +6,13 @@ use CraftyDigit\Puff\Attributes\Singleton;
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Exceptions\Container\ContainerException;
 use CraftyDigit\Puff\Exceptions\Container\ServiceNotFoundException;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
-use ReflectionException;
 use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionUnionType;
 
 class Container implements ContainerExtendedInterface
 {
-    /**
-     * @param array $services
-     * @param array $instances
-     * @param Config|null $config
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
-     * @throws ServiceNotFoundException
-     */
     private function __construct(
         private array $services = [],
         public array $instances = [],
@@ -35,16 +23,6 @@ class Container implements ContainerExtendedInterface
         $this->registerConfigServices();
     }
 
-    /**
-     * @param array $services
-     * @param array $instances
-     * @param Config|null $config
-     * @return Container
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
-     * @throws ServiceNotFoundException
-     */
     public static function getInstance(
         array $services = [],
         array $instances = [],
@@ -62,9 +40,6 @@ class Container implements ContainerExtendedInterface
 
     /**
      * Register services from config
-     * 
-     * @return void
-     * @throws ServiceNotFoundException
      */
     private function registerConfigServices(): void
     {
@@ -75,17 +50,6 @@ class Container implements ContainerExtendedInterface
         };
     }
 
-    /**
-     * @inheritDoc
-     * @param string $id
-     * @param array $params
-     * @return mixed
-     * @throws ContainerException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
-     * @throws ServiceNotFoundException
-     */
     public function get(string $id, array $params = []): mixed
     {
         $name = $this->has($id) ? $this->services[$id] : $id;
@@ -99,20 +63,11 @@ class Container implements ContainerExtendedInterface
         return $this->callClass($name, $params);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function has(string $id): bool
     {
         return array_key_exists($id, $this->services);
     }
 
-    /**
-     * @param string $id
-     * @param string $name
-     * @return void
-     * @throws ServiceNotFoundException
-     */
     public function set(string $id, string $name): void
     {
         if (!class_exists($name)) {
@@ -124,16 +79,6 @@ class Container implements ContainerExtendedInterface
         $this->services[$id] = $name;
     }
 
-    /**
-     * @param string $name
-     * @param array $params
-     * @return mixed
-     * @throws ContainerException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
-     * @throws ServiceNotFoundException
-     */
     private function callClass(string $name, array $params = []): mixed
     {
         if ($name === Container::class) {
@@ -189,19 +134,6 @@ class Container implements ContainerExtendedInterface
         return $newInstance;
     }
 
-    /**
-     * @inheritDoc
-     * @param string $class
-     * @param string $method
-     * @param array $params
-     * @param string|object|null $target
-     * @return mixed
-     * @throws ContainerException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
-     * @throws ServiceNotFoundException
-     */
     public function callMethod(
         string $class, 
         string $method, 
@@ -219,17 +151,6 @@ class Container implements ContainerExtendedInterface
         return $method->invoke($target, ...$dependencies);
     }
 
-    /**
-     * @param ReflectionMethod $method
-     * @param string $name
-     * @param array $presetParams
-     * @return array
-     * @throws ContainerException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
-     * @throws ServiceNotFoundException
-     */
     private function resolveMethodDependencies(
         ReflectionMethod $method, 
         string $name, 

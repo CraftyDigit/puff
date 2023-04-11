@@ -7,12 +7,6 @@ use Throwable;
 
 class RouteNotFoundException extends Exception
 {
-    /**
-     * @param $message
-     * @param $code
-     * @param Throwable|null $previous
-     * @param string|null $route
-     */
     public function __construct($message = "", $code = 404, Throwable $previous = null, string $route = null)
     {
         if ($message === "") {

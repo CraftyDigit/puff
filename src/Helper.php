@@ -7,11 +7,6 @@ use Exception;
 
 class Helper
 {
-    /**
-     * @param bool $allowFalse
-     * @return string|false
-     * @throws Exception
-     */
     public function getAppRootDirectory(bool $allowFalse = false): string | false
     {
         $loaders = ClassLoader::getRegisteredLoaders();
@@ -35,12 +30,6 @@ class Helper
         );    
     }
 
-    /**
-     * @param string $directoryName
-     * @param bool $allowFalse
-     * @return string|false
-     * @throws Exception
-     */
     public function getPathToAppDirectory(string $directoryName, bool $allowFalse = false): string | false
     {
         $appRootDirectory = $this->getAppRootDirectory($allowFalse);
@@ -52,12 +41,6 @@ class Helper
         return $appRootDirectory . DIRECTORY_SEPARATOR . $directoryName;
     }
 
-    /**
-     * @param string $fileName
-     * @param bool $allowFalse
-     * @return string|false
-     * @throws Exception
-     */
     public function getPathToAppFile(string $fileName, bool $allowFalse = false): string | false
     {
         $appRootDirectory = $this->getAppRootDirectory($allowFalse);
@@ -69,11 +52,6 @@ class Helper
         return $appRootDirectory . DIRECTORY_SEPARATOR . $fileName;
     }
 
-    /**
-     * @param $directoryName
-     * @return array
-     * @throws Exception
-     */
     public function getAppDirectoryFiles($directoryName): array
     {
         $files = [];
@@ -89,10 +67,6 @@ class Helper
         return $files;
     }
 
-    /**
-     * @param $directoryPath
-     * @return array
-     */
     public function getDirectoryFiles($directoryPath): array
     {
         $files = [];
