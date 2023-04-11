@@ -5,11 +5,13 @@ namespace CraftyDigit\Puff\DataHandler;
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\DataHandler\NonORM\JSON\JSONEntityManager;
+use CraftyDigit\Puff\DataHandler\NonORM\NonORMEntityManagerInterface;
 use CraftyDigit\Puff\Enums\DataHandler;
 use CraftyDigit\Puff\Exceptions\ClassNotFoundException;
 use CraftyDigit\Puff\Helper;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMSetup;
 
 readonly class DataHandlerManager implements DataHandlerManagerInterface
@@ -20,7 +22,8 @@ readonly class DataHandlerManager implements DataHandlerManagerInterface
         protected Config                     $config,
     )
     {}
-    public function getEntityManager(DataHandler $dataHandler = DataHandler::DOCTRINE): object
+    
+    public function getEntityManager(DataHandler $dataHandler = DataHandler::DOCTRINE): NonORMEntityManagerInterface|EntityManagerInterface
     {
         switch ($dataHandler) {
             case DataHandler::JSON :
