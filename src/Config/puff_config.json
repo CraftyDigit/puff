@@ -6,10 +6,13 @@
       "CraftyDigit\\Puff\\Container\\ContainerExtendedInterface": "CraftyDigit\\Puff\\Container\\Container",
       "CraftyDigit\\Puff\\Controller\\ControllerManagerInterface": "CraftyDigit\\Puff\\Controller\\ControllerManager",
       "CraftyDigit\\Puff\\ErrorReporter\\ErrorReporterInterface": "CraftyDigit\\Puff\\ErrorReporter\\ErrorReporter",
-      "CraftyDigit\\Puff\\Model\\ModelInterface": "CraftyDigit\\Puff\\Model\\Model",
-      "CraftyDigit\\Puff\\Repository\\RepositoryManagerInterface": "CraftyDigit\\Puff\\Repository\\RepositoryManager",
+      "CraftyDigit\\Puff\\SimpleModel\\SimpleModelInterface": "CraftyDigit\\Puff\\SimpleModel\\SimpleModel",
       "CraftyDigit\\Puff\\Router\\RouterInterface": "CraftyDigit\\Puff\\Router\\Router",
-      "CraftyDigit\\Puff\\Template\\TemplateInterface": "CraftyDigit\\Puff\\Template\\Template"
+      "CraftyDigit\\Puff\\Template\\TemplateInterface": "CraftyDigit\\Puff\\Template\\Template",
+      "CraftyDigit\\Puff\\DataHandler\\DataHandlerManagerInterface": "CraftyDigit\\Puff\\DataHandler\\DataHandlerManager"
     }
-  }
+  },
+  "additional_config_files": [
+    "puff_config"
+  ]
 }

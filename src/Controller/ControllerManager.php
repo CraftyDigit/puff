@@ -8,17 +8,10 @@ use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use ReflectionClass;
 use CraftyDigit\Puff\Exceptions\ClassNotFoundException;
 use CraftyDigit\Puff\Helper;
-use Exception;
 
 #[Singleton]
 class ControllerManager implements ControllerManagerInterface
 {
-    /**
-     * @param ContainerExtendedInterface $container
-     * @param Helper $helper
-     * @param array $controllersClasses
-     * @throws Exception
-     */
     public function __construct(
         private readonly ContainerExtendedInterface $container,
         private readonly Helper $helper,
@@ -28,10 +21,6 @@ class ControllerManager implements ControllerManagerInterface
         $this->setControllersClasses();
     }
 
-    /**
-     * @return void
-     * @throws Exception
-     */
     private function setControllersClasses(): void
     {
         $classes = [];
@@ -57,19 +46,11 @@ class ControllerManager implements ControllerManagerInterface
         $this->controllersClasses = $classes;
     }
 
-    /**
-     * @return array
-     */
     public function getControllersClasses(): array
     {
         return $this->controllersClasses;
     }
 
-    /**
-     * @param string $name
-     * @return ControllerInterface
-     * @throws ClassNotFoundException
-     */
     public function getController(string $name): ControllerInterface
     {
         if (!isset($this->controllersClasses[$name])) {

@@ -7,12 +7,6 @@ use Throwable;
 
 class FileNotFoundException extends Exception
 {
-    /**
-     * @param $message
-     * @param $code
-     * @param Throwable|null $previous
-     * @param string|null $path
-     */
     public function __construct($message = "", $code = 500, Throwable $previous = null, string $path = null)
     {
         if ($message === "") {
