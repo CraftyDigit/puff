@@ -1,15 +1,15 @@
 <?php
 
-namespace CraftyDigit\Puff\DataHandler\NonORM\JSON;
+namespace CraftyDigit\Puff\DataHandler\NoStruct\JSON;
 
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
-use CraftyDigit\Puff\DataHandler\NonORM\AbstractNonORMRepository;
+use CraftyDigit\Puff\DataHandler\NoStruct\AbstractNoStructRepository;
 use CraftyDigit\Puff\Exceptions\FileNotFoundException;
 use CraftyDigit\Puff\Helper;
 use CraftyDigit\Puff\SimpleModel\SimpleModel;
 use CraftyDigit\Puff\SimpleModel\SimpleModelInterface;
 
-class JSONRepository extends AbstractNonORMRepository 
+class JSONRepository extends AbstractNoStructRepository 
 {
     public function __construct(
         private readonly ContainerExtendedInterface $container,

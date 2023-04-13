@@ -1,10 +1,10 @@
 <?php
 
-namespace CraftyDigit\Puff\DataHandler\NonORM;
+namespace CraftyDigit\Puff\DataHandler\NoStruct;
 
 use CraftyDigit\Puff\SimpleModel\SimpleModel;
 
-interface NonORMRepositoryInterface
+interface NoStructRepositoryInterface
 {
     public function getAll(): array;
 

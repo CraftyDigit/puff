@@ -4,8 +4,8 @@ namespace CraftyDigit\Puff\DataHandler;
 
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
-use CraftyDigit\Puff\DataHandler\NonORM\JSON\JSONEntityManager;
-use CraftyDigit\Puff\DataHandler\NonORM\NonORMEntityManagerInterface;
+use CraftyDigit\Puff\DataHandler\NoStruct\JSON\JSONEntityManager;
+use CraftyDigit\Puff\DataHandler\NoStruct\NoStructEntityManagerInterface;
 use CraftyDigit\Puff\Enums\DataHandler;
 use CraftyDigit\Puff\Exceptions\ClassNotFoundException;
 use CraftyDigit\Puff\Helper;
@@ -23,7 +23,7 @@ readonly class DataHandlerManager implements DataHandlerManagerInterface
     )
     {}
     
-    public function getEntityManager(DataHandler $dataHandler = DataHandler::DOCTRINE): NonORMEntityManagerInterface|EntityManagerInterface
+    public function getEntityManager(DataHandler $dataHandler = DataHandler::DOCTRINE): NoStructEntityManagerInterface|EntityManagerInterface
     {
         switch ($dataHandler) {
             case DataHandler::JSON :
