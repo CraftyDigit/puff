@@ -8,6 +8,7 @@ use CraftyDigit\Puff\Exceptions\FileNotFoundException;
 use CraftyDigit\Puff\Helper;
 use CraftyDigit\Puff\SimpleModel\SimpleModel;
 use CraftyDigit\Puff\SimpleModel\SimpleModelInterface;
+use Exception;
 
 class JSONRepository extends AbstractNoStructRepository 
 {
@@ -24,26 +25,171 @@ class JSONRepository extends AbstractNoStructRepository
         $this->loadData();
     }
 
-    public function getAll(): array
+    public function findAll(): array
     {
-        $items = [];
-
-        foreach ($this->data['items'] as $dataItem) {
-            $items[] = $this->container->get(SimpleModelInterface::class, ['data' => $dataItem]);
-        }
-
-        return $items;
+        return $this->findBy(criteria: []);
     }
 
-    public function getOneById(int $itemId): ?SimpleModel
+    public function find(int $itemId): ?SimpleModel
     {
-        foreach ($this->data['items'] as $dataItem) {
-            if ($dataItem['id'] == $itemId) {
-                return $this->container->get(SimpleModelInterface::class, ['data' => $dataItem]);
-            }
+        $items = $this->findBy(criteria: ['id' => $itemId], limit: 1);
+
+        if (count($items) > 0) {
+            return $items[0];
         }
 
         return null;
+    }
+    
+    public function findOneBy(array $criteria): ?SimpleModel
+    {
+        $items = $this->findBy(criteria: $criteria, limit: 1);
+
+        if (count($items) > 0) {
+            return $items[0];
+        }
+
+        return null;
+    }
+    
+    public function findBy(
+        array $criteria = [], 
+        ?array $orderBy = null, 
+        ?int $limit = null, 
+        ?int $offset = null): array
+    {
+        $items = [];
+        
+        foreach ($this->data['items'] as $dataItem) {
+            $itemSuitable = true;
+            
+            foreach ($criteria as $field => $compareData) {
+                if (!isset($dataItem[$field])) {
+                    throw new Exception("Field $field not found in data source");
+                }
+                
+                if (is_array($compareData)) {
+                    list($value, $operator) = $compareData;
+                } else {
+                    $value = $compareData;
+                    $operator = '=';
+                }
+                
+                if ($operator == '=') {
+                    if ($dataItem[$field] != $value) {
+                        $itemSuitable = false;
+                        
+                        break;
+                    }
+                } else if ($operator == '!=') {
+                    if ($dataItem[$field] == $value) {
+                        $itemSuitable = false;
+                        
+                        break;
+                    }
+                } else if ($operator == '>') {
+                    if ($dataItem[$field] <= $value) {
+                        $itemSuitable = false;
+                        
+                        break;
+                    }
+                } else if ($operator == '>=') {
+                    if ($dataItem[$field] < $value) {
+                        $itemSuitable = false;
+                        
+                        break;
+                    }
+                } else if ($operator == '<') {
+                    if ($dataItem[$field] >= $value) {
+                        $itemSuitable = false;
+                        
+                        break;
+                    }
+                } else if ($operator == '<=') {
+                    if ($dataItem[$field] > $value) {
+                        $itemSuitable = false;
+                        
+                        break;
+                    }
+                } else if ($operator == 'in') {
+                    if (!in_array($dataItem[$field], $value)) {
+                        $itemSuitable = false;
+                        
+                        break;
+                    }
+                } else if ($operator == 'not in') {
+                    if (in_array($dataItem[$field], $value)) {
+                        $itemSuitable = false;
+                        
+                        break;
+                    }
+                } else if ($operator == 'like') {
+                    if (strpos($dataItem[$field], $value) === false) {
+                        $itemSuitable = false;
+                        
+                        break;
+                    }
+                } else if ($operator == 'not like') {
+                    if (strpos($dataItem[$field], $value) !== false) {
+                        $itemSuitable = false;
+                        
+                        break;
+                    }
+                } else if ($operator == 'is null') {
+                    if ($dataItem[$field] !== null) {
+                        $itemSuitable = false;
+                        
+                        break;
+                    }
+                } else if ($operator == 'is not null') {
+                    if ($dataItem[$field] === null) {
+                        $itemSuitable = false;
+                        
+                        break;
+                    }
+                } else {
+                    throw new Exception("Operator $operator not supported");
+                }
+            }
+
+            if ($itemSuitable) {
+                if ($offset && $offset > 0) {
+                    $offset--;
+                    continue;
+                }
+
+                if (!is_null($limit)) {
+                    if ($limit > 0) {
+                        $limit--;
+                    } else {
+                        break;
+                    }
+                }
+                
+                $items[] = $dataItem;
+            }
+        }
+        
+        if ($orderBy) {
+            if (sizeof($orderBy) > 1) {
+                throw new Exception('Only ordering by one field is supported');
+            }
+
+            $field = array_keys($orderBy)[0];
+            $order = array_values($orderBy)[0];
+            
+            $items = $this->helper->sortArrayByFields($items, [$field]);
+            
+            if (strtolower($order) === 'desc') {
+                $items = array_reverse($items);
+            }
+        }
+        
+        foreach ($items as $idx => $item) {
+            $items[$idx] = $this->container->get(SimpleModelInterface::class, ['data' => $item]);
+        }
+        
+        return $items;
     }
 
     public function getScheme(): array
@@ -128,8 +274,13 @@ class JSONRepository extends AbstractNoStructRepository
         $this->data = json_decode(file_get_contents($file), 1);
     }
 
+    public function getDataSourceName(): string
+    {
+        return $this->dataSourceName;
+    }
+
     private function getDataFileFullName(): string
     {
-        return $this->helper->getPathToAppFile('Data/json/' . $this->dataSourceName . '.json'); 
+        return $this->helper->getPathToAppFile('Data/json/' . $this->dataSourceName . '.json');
     }
 }
