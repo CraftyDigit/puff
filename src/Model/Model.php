@@ -17,6 +17,11 @@ class Model implements ModelInterface
         $this->data[$name] = $value;
     }
 
+    public function __isset(string $name): bool
+    {
+        return isset($this->data[$name]);
+    }
+
     public function getData(): array
     {
         return $this->data;
