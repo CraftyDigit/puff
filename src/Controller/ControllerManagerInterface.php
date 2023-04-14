@@ -4,5 +4,5 @@ namespace CraftyDigit\Puff\Controller;
 
 interface ControllerManagerInterface
 {
-    public function getController(string $name): ControllerInterface;
+    public function getController(string $name): AbstractController;
 }

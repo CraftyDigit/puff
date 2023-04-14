@@ -2,62 +2,26 @@
 
 namespace CraftyDigit\Puff\Controller;
 
-use CraftyDigit\Puff\Container\ContainerExtendedInterface;
-use CraftyDigit\Puff\Exceptions\FileNotFoundException;
-use CraftyDigit\Puff\Template\TemplateInterface;
+use CraftyDigit\Puff\Config\Config;
+use CraftyDigit\Puff\Enums\TemplateEngine;
+use CraftyDigit\Puff\Template\TemplateEngineInterface;
+use CraftyDigit\Puff\Template\TemplateEngineManagerInterface;
+use Exception;
 
-abstract class AbstractController implements ControllerInterface
+abstract class AbstractController
 {
     public function __construct(
-        protected ContainerExtendedInterface $container,
-        public ?TemplateInterface $template = null
+        protected readonly TemplateEngineManagerInterface $templateEngineManager,
+        protected readonly Config $config,
+        protected ?TemplateEngineInterface $templateEngine = null
     )
     {
-        $this->template = $this->template ??
-            $this->container->get(TemplateInterface::class, ['name' => $this->getDefaultTemplateName()]);
-    }
-
-    public function getDefaultTemplateName(): string
-    {
-        $classFullName = get_class($this);
-
-        $templateName = str_replace('App\\Controllers\\','', $classFullName);
-        $templateName = str_replace('Controller', '', $templateName);
-        $templateName = str_replace('\\', DIRECTORY_SEPARATOR, $templateName);
+        $defaultEngine = TemplateEngine::tryFrom($this->config->default_template_engine);
         
-        $templateNameArr = explode(DIRECTORY_SEPARATOR, $templateName);
-        $templateNameArr[sizeof($templateNameArr) - 1] = strtolower($templateNameArr[sizeof($templateNameArr) - 1]);
-
-        return implode(DIRECTORY_SEPARATOR, $templateNameArr);
-    }
-
-    protected function output(array $variables = []): void
-    {
-        $templatePath = $this->template->getPath();
-        $output = '';
-        
-        if (!$this->template->checkIfFileExists()) {
-            throw new FileNotFoundException("Template file '$templatePath' is not exist!");
-        }
-
-        extract($variables);
-
-        ob_start();
-
-        include $templatePath;
-
-        $output = ob_get_clean();
-
-        print $output;
-    }
-
-    public function render(?TemplateInterface $template = null, array $params = []): void
-    {
-        if ($template) {
-            $this->template = $template;
+        if ($defaultEngine === null) {
+            throw new Exception('Invalid default template engine');
         }
         
-        $this->output($params);
+        $this->templateEngine = $this->templateEngineManager->getTemplateEngine($defaultEngine);
     }
-    
 }
