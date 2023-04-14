@@ -2,13 +2,13 @@
 
 namespace CraftyDigit\Puff\DataHandler\NoStruct;
 
-use CraftyDigit\Puff\SimpleModel\SimpleModel;
+use CraftyDigit\Puff\Model\Model;
 
 interface NoStructRepositoryInterface
 {
     public function findAll(): array;
     
-    public function find(int $itemId): ?SimpleModel;
+    public function find(int $itemId): ?Model;
     
     public function findBy(
         array $criteria,
@@ -17,17 +17,17 @@ interface NoStructRepositoryInterface
        ?int $offset = null
     ): array;
     
-    public function findOneBy(array $criteria): ?SimpleModel;
+    public function findOneBy(array $criteria): ?Model;
     
     public function getScheme(): array;
 
-    public function getBlankItem(): SimpleModel;
+    public function getBlankItem(): Model;
 
-    public function updateItem(SimpleModel $item): void;
+    public function updateItem(Model $item): void;
 
-    public function addItem(SimpleModel $item): SimpleModel;
+    public function addItem(Model $item): Model;
 
-    public function deleteItem(SimpleModel $item): void;
+    public function deleteItem(Model $item): void;
     
     public function getDataSourceName(): string;
 }

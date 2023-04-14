@@ -6,8 +6,8 @@ use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\DataHandler\NoStruct\AbstractNoStructRepository;
 use CraftyDigit\Puff\Exceptions\FileNotFoundException;
 use CraftyDigit\Puff\Helper;
-use CraftyDigit\Puff\SimpleModel\SimpleModel;
-use CraftyDigit\Puff\SimpleModel\SimpleModelInterface;
+use CraftyDigit\Puff\Model\Model;
+use CraftyDigit\Puff\Model\ModelInterface;
 use Exception;
 
 class JSONRepository extends AbstractNoStructRepository 
@@ -30,7 +30,7 @@ class JSONRepository extends AbstractNoStructRepository
         return $this->findBy(criteria: []);
     }
 
-    public function find(int $itemId): ?SimpleModel
+    public function find(int $itemId): ?Model
     {
         $items = $this->findBy(criteria: ['id' => $itemId], limit: 1);
 
@@ -41,7 +41,7 @@ class JSONRepository extends AbstractNoStructRepository
         return null;
     }
     
-    public function findOneBy(array $criteria): ?SimpleModel
+    public function findOneBy(array $criteria): ?Model
     {
         $items = $this->findBy(criteria: $criteria, limit: 1);
 
@@ -186,7 +186,7 @@ class JSONRepository extends AbstractNoStructRepository
         }
         
         foreach ($items as $idx => $item) {
-            $items[$idx] = $this->container->get(SimpleModelInterface::class, ['data' => $item]);
+            $items[$idx] = $this->container->get(ModelInterface::class, ['data' => $item]);
         }
         
         return $items;
@@ -197,7 +197,7 @@ class JSONRepository extends AbstractNoStructRepository
         return array_keys($this->data['items'][0]);
     }
 
-    public function getBlankItem(): SimpleModel
+    public function getBlankItem(): Model
     {
         $scheme = $this->getScheme();
 
@@ -207,10 +207,10 @@ class JSONRepository extends AbstractNoStructRepository
             $dataItem[$field] = '';
         }
 
-        return $this->container->get(SimpleModelInterface::class, ['data' => $dataItem]);
+        return $this->container->get(ModelInterface::class, ['data' => $dataItem]);
     }
 
-    public function updateItem(SimpleModel $item): void
+    public function updateItem(Model $item): void
     {
         for ($i = 0; $i < sizeof($this->data['items']); $i++) {
             if ($this->data['items'][$i]['id'] == $item->id) {
@@ -223,7 +223,7 @@ class JSONRepository extends AbstractNoStructRepository
         }
     }
 
-    public function addItem(SimpleModel $item): SimpleModel
+    public function addItem(Model $item): Model
     {
         $maxId = 0;
 
@@ -240,10 +240,10 @@ class JSONRepository extends AbstractNoStructRepository
             $this->saveData();
         }
 
-        return $this->container->get(SimpleModelInterface::class, ['data' => $newItemData]);
+        return $this->container->get(ModelInterface::class, ['data' => $newItemData]);
     }
 
-    public function deleteItem(SimpleModel $item): void
+    public function deleteItem(Model $item): void
     {
         for ($i = 0; $i < sizeof($this->data['items']); $i++) {
             if ($this->data['items'][$i]['id'] == $item->id) {

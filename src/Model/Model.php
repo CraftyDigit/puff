@@ -1,8 +1,8 @@
 <?php
 
-namespace CraftyDigit\Puff\SimpleModel;
+namespace CraftyDigit\Puff\Model;
 
-class SimpleModel implements SimpleModelInterface
+class Model implements ModelInterface
 {
     public function __construct(private array $data)
     {}

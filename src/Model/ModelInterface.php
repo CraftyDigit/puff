@@ -1,8 +1,8 @@
 <?php
 
-namespace CraftyDigit\Puff\SimpleModel;
+namespace CraftyDigit\Puff\Model;
 
-interface SimpleModelInterface
+interface ModelInterface
 {
 
     public function __get(string $name): mixed;
