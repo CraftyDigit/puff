@@ -169,6 +169,12 @@ class Container implements ContainerExtendedInterface
                 $dependencies[] = $presetParams[$paramName];
                 continue;
             }
+
+            if ($param->isDefaultValueAvailable()) {
+                // Dependency has default value. Use it.
+                $dependencies[] = $param->getDefaultValue();
+                continue;
+            }
             
             $paramType = $param->getType();
 
@@ -185,20 +191,14 @@ class Container implements ContainerExtendedInterface
             }
 
             if ($paramType instanceof ReflectionNamedType) {
-                if ($param->isDefaultValueAvailable()) {
-                    // Dependency has default value. Use it.
-                    $dependencies[] = $param->getDefaultValue();
+                if ($paramType->isBuiltin()) {
+                    // Dependency is a primitive type. Throw an exception.
+                    throw new ContainerException(
+                        "'{$name}' service can't be resolved because '{$paramName}' param is not optional and has no default value"
+                    );
                 } else {
-                    // Dependency has no default value.
-                    if ($paramType->isBuiltin()) {
-                        // Dependency is a primitive type. Throw an exception.
-                        throw new ContainerException(
-                            "'{$name}' service can't be resolved because '{$paramName}' param is not optional and has no default value"
-                        );
-                    } else {
-                        // Dependency is a class. Resolve it.
-                        $dependencies[] = $this->get($paramType->getName());
-                    }
+                    // Dependency is a class. Resolve it.
+                    $dependencies[] = $this->get($paramType->getName());
                 }
             }
         }
