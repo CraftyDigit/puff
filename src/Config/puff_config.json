@@ -1,18 +1,26 @@
 {
   "mode": "dev",
-  "data_source_type": "json",
   "di_container": {
     "services": {
       "CraftyDigit\\Puff\\Container\\ContainerExtendedInterface": "CraftyDigit\\Puff\\Container\\Container",
       "CraftyDigit\\Puff\\Controller\\ControllerManagerInterface": "CraftyDigit\\Puff\\Controller\\ControllerManager",
       "CraftyDigit\\Puff\\ErrorReporter\\ErrorReporterInterface": "CraftyDigit\\Puff\\ErrorReporter\\ErrorReporter",
-      "CraftyDigit\\Puff\\SimpleModel\\SimpleModelInterface": "CraftyDigit\\Puff\\SimpleModel\\SimpleModel",
+      "CraftyDigit\\Puff\\Model\\ModelInterface": "CraftyDigit\\Puff\\Model\\Model",
       "CraftyDigit\\Puff\\Router\\RouterInterface": "CraftyDigit\\Puff\\Router\\Router",
       "CraftyDigit\\Puff\\Template\\TemplateInterface": "CraftyDigit\\Puff\\Template\\Template",
-      "CraftyDigit\\Puff\\DataHandler\\DataHandlerManagerInterface": "CraftyDigit\\Puff\\DataHandler\\DataHandlerManager"
+      "CraftyDigit\\Puff\\DataHandler\\DataHandlerInterface": "CraftyDigit\\Puff\\DataHandler\\DataHandler",
+      "CraftyDigit\\Puff\\Template\\TemplateEngineManagerInterface": "CraftyDigit\\Puff\\Template\\TemplateEngineManager"
     }
   },
   "additional_config_files": [
     "puff_config"
-  ]
+  ],
+  "default_data_handler": "doctrine",
+  "default_template_engine": "twig",
+  "template_extension": "php",
+  "twig": {
+    "cache": "Build/Cache/Twig",
+    "template_extension": "html.twig",
+    "debug": true
+  }
 }

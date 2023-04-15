@@ -1,8 +1,8 @@
 <?php
 
-namespace CraftyDigit\Puff\SimpleModel;
+namespace CraftyDigit\Puff\Model;
 
-class SimpleModel implements SimpleModelInterface
+class Model implements ModelInterface
 {
     public function __construct(private array $data)
     {}
@@ -15,6 +15,11 @@ class SimpleModel implements SimpleModelInterface
     public function __set(string $name, mixed $value): void
     {
         $this->data[$name] = $value;
+    }
+
+    public function __isset(string $name): bool
+    {
+        return isset($this->data[$name]);
     }
 
     public function getData(): array

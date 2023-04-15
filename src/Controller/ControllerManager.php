@@ -51,7 +51,7 @@ class ControllerManager implements ControllerManagerInterface
         return $this->controllersClasses;
     }
 
-    public function getController(string $name): ControllerInterface
+    public function getController(string $name): AbstractController
     {
         if (!isset($this->controllersClasses[$name])) {
             throw new ClassNotFoundException("Controller class '$name' not found");
