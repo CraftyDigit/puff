@@ -2,7 +2,7 @@
 
 namespace CraftyDigit\Puff\Enums;
 
-enum DataHandler
+enum DataSourceType
 {
     case JSON;
     case DOCTRINE;

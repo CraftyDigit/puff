@@ -1,9 +1,9 @@
 <?php
 
-namespace CraftyDigit\Puff\DataHandler\NoStruct\JSON;
+namespace CraftyDigit\Puff\EntityManager\NoStruct\JSON;
 
-use CraftyDigit\Puff\DataHandler\NoStruct\AbstractNoStructEntityManager;
-use CraftyDigit\Puff\DataHandler\NoStruct\NoStructRepositoryInterface;
+use CraftyDigit\Puff\EntityManager\NoStruct\AbstractNoStructEntityManager;
+use CraftyDigit\Puff\EntityManager\NoStruct\NoStructRepositoryInterface;
 
 class JSONEntityManager extends AbstractNoStructEntityManager
 {

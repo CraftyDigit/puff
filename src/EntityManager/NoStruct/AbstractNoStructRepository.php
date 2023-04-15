@@ -1,6 +1,6 @@
 <?php
 
-namespace CraftyDigit\Puff\DataHandler\NoStruct;
+namespace CraftyDigit\Puff\EntityManager\NoStruct;
 
 abstract class AbstractNoStructRepository implements NoStructRepositoryInterface
 {

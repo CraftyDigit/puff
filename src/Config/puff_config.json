@@ -8,7 +8,7 @@
       "CraftyDigit\\Puff\\Model\\ModelInterface": "CraftyDigit\\Puff\\Model\\Model",
       "CraftyDigit\\Puff\\Router\\RouterInterface": "CraftyDigit\\Puff\\Router\\Router",
       "CraftyDigit\\Puff\\Template\\TemplateInterface": "CraftyDigit\\Puff\\Template\\Template",
-      "CraftyDigit\\Puff\\DataHandler\\DataHandlerManagerInterface": "CraftyDigit\\Puff\\DataHandler\\DataHandlerManager",
+      "CraftyDigit\\Puff\\DataHandler\\DataHandlerInterface": "CraftyDigit\\Puff\\DataHandler\\DataHandler",
       "CraftyDigit\\Puff\\Template\\TemplateEngineManagerInterface": "CraftyDigit\\Puff\\Template\\TemplateEngineManager"
     }
   },
