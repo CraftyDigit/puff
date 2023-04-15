@@ -25,7 +25,6 @@ readonly class DataHandler implements DataHandlerInterface
     
     public function getEntityManager(DataSourceType $dataHandler = DataSourceType::DOCTRINE): NoStructEntityManagerInterface|EntityManagerInterface
     {
-        // TODO: Think about refactoring this. Perhaps rename DataHandlerManager to DataHandler and split it into two classes: DataHandler and EntityManagerFactory
         switch ($dataHandler) {
             case DataSourceType::JSON :
                 $entityManager = $this->container->get(JSONEntityManager::class);
