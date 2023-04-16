@@ -32,6 +32,6 @@ class Template implements TemplateInterface
 
     protected function getTemplatesDirectory(): string
     {
-        return $this->helper->getPathToAppDirectory('Templates');
+        return $this->helper->getPathToSrcSubDirectory('Templates');
     }
 }

@@ -19,13 +19,13 @@ class TwigTemplateEngine implements TemplateEngineInterface
         private ?Environment $twig = null
     )
     {
-        $templatePath = $this->helper->getPathToAppDirectory('Templates');
+        $templatePath = $this->helper->getPathToSrcSubDirectory('Templates');
 
         $this->loader->addPath($templatePath);
         
         $twigConfig = $this->config->twig;
         
-        $cache = $twigConfig['cache'] ? $this->helper->getPathToAppDirectory($twigConfig['cache']) : false;
+        $cache = $twigConfig['cache'] ? $this->helper->getPathToBuildSubDirectory($twigConfig['cache']) : false;
         
         $this->twig = $this->container->get(Environment::class, [
             'loader' => $this->loader,

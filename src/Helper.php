@@ -30,7 +30,7 @@ class Helper
         );    
     }
 
-    public function getPathToAppDirectory(string $directoryName, bool $allowFalse = false): string | false
+    public function getPathToAppSubDirectory(string $directoryName, bool $allowFalse = false): string | false
     {
         $appRootDirectory = $this->getAppRootDirectory($allowFalse);
         
@@ -39,6 +39,16 @@ class Helper
         }
 
         return $appRootDirectory . DIRECTORY_SEPARATOR . $directoryName;
+    }
+    
+    public function getPathToSrcSubDirectory(string $directoryName, bool $allowFalse = false): string | false
+    {
+        return $this->getPathToAppSubDirectory('src' . DIRECTORY_SEPARATOR . $directoryName, $allowFalse); 
+    }
+    
+    public function getPathToBuildSubDirectory(string $directoryName, bool $allowFalse = false): string | false
+    {
+        return $this->getPathToAppSubDirectory('build' . DIRECTORY_SEPARATOR . $directoryName, $allowFalse); 
     }
 
     public function getPathToAppFile(string $fileName, bool $allowFalse = false): string | false
@@ -51,12 +61,22 @@ class Helper
 
         return $appRootDirectory . DIRECTORY_SEPARATOR . $fileName;
     }
+    
+    public function getPathToSrcFile(string $fileName, bool $allowFalse = false): string | false
+    {
+        return $this->getPathToAppFile('src' . DIRECTORY_SEPARATOR . $fileName, $allowFalse); 
+    }
+    
+    public function getPathToBuildFile(string $fileName, bool $allowFalse = false): string | false
+    {
+        return $this->getPathToAppFile('build' . DIRECTORY_SEPARATOR . $fileName, $allowFalse); 
+    }
 
     public function getAppDirectoryFiles($directoryName): array
     {
         $files = [];
         
-        $directoryPath = $this->getPathToAppDirectory($directoryName, true);
+        $directoryPath = $this->getPathToAppSubDirectory($directoryName, true);
         
         if ($directoryPath === false) {
             return $files;

@@ -41,7 +41,7 @@ class Config
         $additionalConfigFiles = $parameters['additional_config_files'] ?? [];
         
         foreach ($additionalConfigFiles as $additionalConfigFileName) {
-            $additionalConfigFileFullName = $this->helper->getPathToAppFile($additionalConfigFileName . '.json', true);
+            $additionalConfigFileFullName = $this->helper->getPathToSrcFile($additionalConfigFileName . '.json', true);
             
             $this->loadParametersFromFile($additionalConfigFileFullName);
         }

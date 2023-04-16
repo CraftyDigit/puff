@@ -281,6 +281,8 @@ class JSONRepository extends AbstractNoStructRepository
 
     private function getDataFileFullName(): string
     {
-        return $this->helper->getPathToAppFile('Data/json/' . $this->dataSourceName . '.json');
+        $ds = DIRECTORY_SEPARATOR;
+        
+        return $this->helper->getPathToSrcFile('Data' . $ds .'json'. $ds . $this->dataSourceName . '.json');
     }
 }
