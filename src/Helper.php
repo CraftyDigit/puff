@@ -86,6 +86,21 @@ class Helper
         
         return $files;
     }
+    
+    public function getSrcDirectoryFiles($directoryName): array
+    {
+        $files = [];
+        
+        $directoryPath = $this->getPathToSrcSubDirectory($directoryName, true);
+        
+        if ($directoryPath === false) {
+            return $files;
+        }
+        
+        $files = $this->getDirectoryFiles($directoryPath);
+        
+        return $files;
+    }
 
     public function getDirectoryFiles($directoryPath): array
     {
