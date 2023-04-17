@@ -27,6 +27,10 @@ class TwigTemplateEngine implements TemplateEngineInterface
         
         $cache = $twigConfig['cache'] ? $this->helper->getPathToBuildSubDirectory($twigConfig['cache']) : false;
         
+        if ($cache && !is_dir($cache)) {
+            mkdir($cache, 0777, true);
+        }
+        
         $this->twig = $this->container->get(Environment::class, [
             'loader' => $this->loader,
             'options' => [
