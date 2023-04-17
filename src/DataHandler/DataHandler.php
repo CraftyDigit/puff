@@ -23,9 +23,9 @@ readonly class DataHandler implements DataHandlerInterface
     )
     {}
     
-    public function getEntityManager(DataSourceType $dataHandler = DataSourceType::DOCTRINE): NoStructEntityManagerInterface|EntityManagerInterface
+    public function getEntityManager(DataSourceType $dataSourceType): NoStructEntityManagerInterface|EntityManagerInterface
     {
-        switch ($dataHandler) {
+        switch ($dataSourceType) {
             case DataSourceType::JSON :
                 $entityManager = $this->container->get(JSONEntityManager::class);
                 break;
@@ -58,7 +58,7 @@ readonly class DataHandler implements DataHandlerInterface
                 break;
                 
             default:
-                throw new ClassNotFoundException('Data handler for ' . $dataHandler->name . ' not registered');
+                throw new ClassNotFoundException('Data handler for ' . $dataSourceType->name . ' not registered');
         }
         
         return $entityManager;
