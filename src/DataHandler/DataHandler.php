@@ -32,7 +32,7 @@ readonly class DataHandler implements DataHandlerInterface
                 
             case DataSourceType::DOCTRINE :
                 $connectConfig = ORMSetup::createAttributeMetadataConfiguration(
-                    paths: [$this->helper->getPathToAppDirectory('Entities')],
+                    paths: [$this->helper->getPathToSrcSubDirectory('Entities')],
                     isDevMode: $this->config->mode === 'dev',
                 );
 

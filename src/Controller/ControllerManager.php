@@ -25,7 +25,7 @@ class ControllerManager implements ControllerManagerInterface
     {
         $classes = [];
 
-        $filesNames = $this->helper->getAppDirectoryFiles('Controllers');
+        $filesNames = $this->helper->getSrcDirectoryFiles('Controllers');
 
         foreach ($filesNames as $fileName) {
             $controllerClass = str_replace('.php', '', $fileName);
