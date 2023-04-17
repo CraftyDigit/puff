@@ -2,8 +2,8 @@
 
 namespace CraftyDigit\Puff\Enums;
 
-enum DataSourceType
+enum DataSourceType: string
 {
-    case JSON;
-    case DOCTRINE;
+    case JSON = 'json';
+    case DOCTRINE = 'doctrine';
 }
