@@ -19,7 +19,7 @@
   "default_template_engine": "twig",
   "template_extension": "php",
   "twig": {
-    "cache": "Build/Cache/Twig",
+    "cache": "cache/twig",
     "template_extension": "html.twig",
     "debug": true
   }
