@@ -127,7 +127,7 @@ class Container implements ContainerExtendedInterface
         }
         
         if ($isSingleton) {
-            // Service is a singleton. Save it's instance.
+            // Service is a singleton. Save its instance.
             $this->instances[$name] = $newInstance;
         }
 
@@ -157,17 +157,28 @@ class Container implements ContainerExtendedInterface
         array $presetParams = []
     ): array
     {
+        $presetParamsAreNamed = count(array_filter(array_keys($presetParams), 'is_string')) > 0;
+
         $params = $method->getParameters();
 
         $dependencies = [];
 
-        foreach ($params as $param) {
+        for ($i = 0; $i < count($params); $i++) {
+            $param = $params[$i];
             $paramName = $param->getName();
-            
-            if (array_key_exists($paramName, $presetParams)) {
-                // Dependency value has been passed in preset params. Use it.
-                $dependencies[] = $presetParams[$paramName];
-                continue;
+
+            if  ($presetParamsAreNamed) {
+                // Preset params are named. Get them by name.
+                if (array_key_exists($paramName, $presetParams)) {
+                    $dependencies[] = $presetParams[$paramName];
+                    continue;
+                }
+            } else {
+                // Preset params are not named. Use them in order.
+                if (array_key_exists($i, $presetParams)) {
+                    $dependencies[] = $presetParams[$i];
+                    continue;
+                }
             }
 
             if ($param->isDefaultValueAvailable()) {
@@ -202,6 +213,7 @@ class Container implements ContainerExtendedInterface
                 }
             }
         }
+        
         return $dependencies;
     }
 }
