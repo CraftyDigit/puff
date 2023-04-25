@@ -8,5 +8,5 @@ use Doctrine\ORM\EntityManagerInterface;
 
 interface DataHandlerInterface
 {
-    public function getEntityManager(DataSourceType $dataHandler): NoStructEntityManagerInterface|EntityManagerInterface;
+    public function getEntityManager(DataSourceType $dataSourceType): NoStructEntityManagerInterface|EntityManagerInterface;
 }

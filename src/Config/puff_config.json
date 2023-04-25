@@ -16,6 +16,11 @@
     "puff_config"
   ],
   "default_data_handler": "doctrine",
+  "doctrine": {
+    "cache_enabled": true,
+    "cache_dir": "cache/doctrine",
+    "cache_lifetime": 3600
+  },
   "default_template_engine": "twig",
   "template_extension": "php",
   "twig": {
