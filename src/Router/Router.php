@@ -61,30 +61,46 @@ class Router implements RouterInterface
         }
     }
 
-    public function followRoute(array $requestParams = []): void
+    public function followRoute(
+        ?string $url = null, 
+        array $requestParams = [], 
+        ?RequestMethod $requestMethod = null): void
     {
-        $path = explode('?', $_SERVER['REQUEST_URI'])[0];
+        $url = $url ?? explode('?', $_SERVER['REQUEST_URI'])[0];
         
-        $requestMethod = RequestMethod::from($_SERVER['REQUEST_METHOD']);
+        $requestMethod = $requestMethod ?? RequestMethod::from($_SERVER['REQUEST_METHOD']);
 
         $this->addParamsToGlobalRequestParams($requestParams, $requestMethod);
         
-        if (
-            isset($this->routes[$requestMethod->value][$path]) 
-            && $this->routes[$requestMethod->value][$path]['isPublic']
-        ) {
-            $controller = $this->routes[$requestMethod->value][$path]['controller'];
-            $method = $this->routes[$requestMethod->value][$path]['method'];
+        $controller = null;
+        $method = null;
+        $params = [];
+
+        foreach ($this->routes[$requestMethod->value] as $route) {
             
-            $controller = $this->container->get($controller);
-            
-            $controller->$method();
-        } else {
-            if (AppMode::from($this->config->mode) === AppMode::DEV) {
-                throw new RouteNotFoundException(route: $path);
-            } else {
-                $this->followRouteByName('error_404');
+            if (!$route['isPublic']) {
+                continue;
             }
+            
+            $pattern = $this->convertPathToRegex($route['path']);
+            
+            if (preg_match('#^' . $pattern . '$#', $url, $matches)) {
+                array_shift($matches); // remove the first element, which is the full match
+                
+                $params = $this->getParamsFromMatches($matches, $route['path']);
+
+                $controller = $this->container->get($route['controller']);
+                $method = $route['method'];
+                
+                break;
+            }
+            
+        }
+
+        if ($controller && $method && method_exists($controller, $method)) {
+            $controller->$method(...$params);
+        } else {
+            $this->handleRouteNotFound($url, $requestMethod);
         }
     }
 
@@ -125,9 +141,9 @@ class Router implements RouterInterface
         return null;
     }
 
-    public function redirect(string $path, array $requestParams = [], RequestMethod $method = RequestMethod::GET): void
+    public function redirect(string $path, array $requestParams = [], RequestMethod $requestMethod = RequestMethod::GET): void
     {
-        if ($method === RequestMethod::GET) {
+        if ($requestMethod === RequestMethod::GET) {
             if (!empty($requestParams)) {
                 $path .= '?' . http_build_query($requestParams);
             }
@@ -135,7 +151,7 @@ class Router implements RouterInterface
             exit;
         }
 
-        if ($method === RequestMethod::POST) {
+        if ($requestMethod === RequestMethod::POST) {
             $formId = uniqid('form_');
 
             $html = '<form style="display: none;" id="' . $formId . '" action="' . $path . '" method="post">';
@@ -191,6 +207,35 @@ class Router implements RouterInterface
             } else {
                 throw new Exception('Request method "' . $requestMethod . '" not supported');
             }
+        }
+    }
+
+    private function convertPathToRegex(string $url): string 
+    {
+        $pattern = preg_replace('/\{(\w+)\}/', '(?P<$1>[^\/]+)', $url); // replace {parameter} with (?P<parameter>[^\/]+)
+        
+        return str_replace('/', '\/', $pattern); // escape slashes in the pattern
+    }
+
+    private function getParamsFromMatches(array $matches, string $path): array 
+    {
+        $params = [];
+        
+        preg_match_all('/\{(\w+)\}/', $path, $paramNames); // extract parameter names from the URL
+        
+        foreach ($paramNames[1] as $name) {
+            $params[] = $matches[$name];
+        }
+        
+        return $params;
+    }
+
+    private function handleRouteNotFound(string $url, RequestMethod $requestMethod)
+    {
+        if (AppMode::from($this->config->mode) === AppMode::DEV) {
+            throw new RouteNotFoundException(route: $url, requestMethod: $requestMethod);
+        } else {
+            $this->followRouteByName('error_404');
         }
     }
 }
