@@ -5,10 +5,10 @@ namespace CraftyDigit\Puff\Controller;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\DataHandler\DataHandlerInterface;
 use CraftyDigit\Puff\EntityManager\NoStruct\NoStructEntityManagerInterface;
-use Doctrine\ORM\EntityManagerInterface;
 use CraftyDigit\Puff\Traits\SetEntityManagerTrait;
+use Doctrine\ORM\EntityManagerInterface;
 
-class AbstractDataController extends AbstractController
+class AbstractDataPageController extends AbstractPageController
 {
     use SetEntityManagerTrait;
     
