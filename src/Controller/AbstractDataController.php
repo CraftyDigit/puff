@@ -6,11 +6,11 @@ use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\DataHandler\DataHandlerInterface;
 use CraftyDigit\Puff\EntityManager\NoStruct\NoStructEntityManagerInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use CraftyDigit\Puff\Traits\SetEntityManagerTrait;
+use CraftyDigit\Puff\Traits\DataControllerTrait;
 
 class AbstractDataController extends AbstractController
 {
-    use SetEntityManagerTrait;
+    use DataControllerTrait;
     
     public function __construct(
         protected ContainerExtendedInterface $container,

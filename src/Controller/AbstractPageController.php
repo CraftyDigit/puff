@@ -5,11 +5,11 @@ namespace CraftyDigit\Puff\Controller;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\Template\TemplateEngineInterface;
 use CraftyDigit\Puff\Template\TemplateEngineManagerInterface;
-use CraftyDigit\Puff\Traits\setTemplateEngineTrait;
+use CraftyDigit\Puff\Traits\PageControllerTrait;
 
 abstract class AbstractPageController extends AbstractController
 {
-    use setTemplateEngineTrait;
+    use PageControllerTrait;
     
     public function __construct(
         protected ContainerExtendedInterface $container,

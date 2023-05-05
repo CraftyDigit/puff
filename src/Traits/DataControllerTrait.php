@@ -8,7 +8,7 @@ use CraftyDigit\Puff\Enums\DataSourceType;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
-trait SetEntityManagerTrait
+trait DataControllerTrait
 {
     private function setEntityManager(
         Config $config,

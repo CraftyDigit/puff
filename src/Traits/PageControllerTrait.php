@@ -8,7 +8,7 @@ use CraftyDigit\Puff\Template\TemplateEngineInterface;
 use CraftyDigit\Puff\Template\TemplateEngineManagerInterface;
 use Exception;
 
-trait setTemplateEngineTrait
+trait PageControllerTrait
 {
     private function setTemplateEngine(
         Config $config,

@@ -5,12 +5,12 @@ namespace CraftyDigit\Puff\Controller;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\DataHandler\DataHandlerInterface;
 use CraftyDigit\Puff\EntityManager\NoStruct\NoStructEntityManagerInterface;
-use CraftyDigit\Puff\Traits\SetEntityManagerTrait;
+use CraftyDigit\Puff\Traits\DataControllerTrait;
 use Doctrine\ORM\EntityManagerInterface;
 
 class AbstractDataPageController extends AbstractPageController
 {
-    use SetEntityManagerTrait;
+    use DataControllerTrait;
     
     public function __construct(
         protected ContainerExtendedInterface $container,
