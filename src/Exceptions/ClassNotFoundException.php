@@ -7,7 +7,12 @@ use Throwable;
 
 class ClassNotFoundException extends Exception
 {
-    public function __construct($message = "", $code = 500, Throwable $previous = null, string $className = null)
+    public function __construct(
+        $message = "",
+        $code = 500,
+        Throwable $previous = null,
+        ?string $className = null
+    )
     {
         if ($message === "") {
             if ($className === null) {

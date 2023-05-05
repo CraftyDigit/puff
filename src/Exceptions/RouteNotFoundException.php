@@ -8,7 +8,13 @@ use Throwable;
 
 class RouteNotFoundException extends Exception
 {
-    public function __construct($message = "", $code = 404, Throwable $previous = null, string $route = null, RequestMethod $requestMethod = RequestMethod::GET)
+    public function __construct(
+        $message = "", 
+        $code = 404, 
+        Throwable $previous = null, 
+        ?string $route = null, 
+        RequestMethod $requestMethod = RequestMethod::GET
+    )
     {
         if ($message === "") {
             if ($route === null) {
