@@ -9,10 +9,10 @@ use CraftyDigit\Puff\Controller\ControllerManagerInterface;
 use CraftyDigit\Puff\Attributes\Route;
 use CraftyDigit\Puff\Enums\AppMode;
 use CraftyDigit\Puff\Enums\RequestMethod;
+use CraftyDigit\Puff\Exceptions\RequestMethodNotSupportedException;
 use CraftyDigit\Puff\Exceptions\RouteNotFoundException;
 use ReflectionClass;
 use ReflectionMethod;
-use Exception;
 
 #[Singleton]
 class Router implements RouterInterface
@@ -205,7 +205,7 @@ class Router implements RouterInterface
             } else if ($requestMethod === RequestMethod::POST) {
                 $_POST += $params;
             } else {
-                throw new Exception('Request method "' . $requestMethod . '" not supported');
+                throw new RequestMethodNotSupportedException('Request method "' . $requestMethod . '" is not supported');
             }
         }
     }
