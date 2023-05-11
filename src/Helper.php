@@ -3,7 +3,7 @@
 namespace CraftyDigit\Puff;
 
 use Composer\Autoload\ClassLoader;
-use Exception;
+use CraftyDigit\Puff\Exceptions\FileSystemException;
 
 class Helper
 {
@@ -25,7 +25,7 @@ class Helper
             return false;
         }
             
-        throw new Exception(
+        throw new FileSystemException(
             'Root folder not found. Please check your composer.json file. It should contain "App" namespace.'
         );    
     }
