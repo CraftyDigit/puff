@@ -27,8 +27,16 @@ readonly class DataHandler implements DataHandlerInterface
     )
     {}
     
-    public function getEntityManager(DataSourceType $dataSourceType): NoStructEntityManagerInterface|EntityManagerInterface
+    public function getEntityManager(?DataSourceType $dataSourceType = null): NoStructEntityManagerInterface|EntityManagerInterface
     {
+        if (!$dataSourceType) {
+            $dataSourceType = DataSourceType::tryFrom($this->config->default_data_handler);
+
+            if ($dataSourceType === null) {
+                throw new ConfigParamException('default_data_handler');
+            }
+        }
+        
         switch ($dataSourceType) {
             case DataSourceType::JSON :
                 $entityManager = $this->container->get(JSONEntityManager::class);
