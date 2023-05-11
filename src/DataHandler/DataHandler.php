@@ -8,6 +8,7 @@ use CraftyDigit\Puff\EntityManager\NoStruct\JSON\JSONEntityManager;
 use CraftyDigit\Puff\EntityManager\NoStruct\NoStructEntityManagerInterface;
 use CraftyDigit\Puff\Enums\DataSourceType;
 use CraftyDigit\Puff\Exceptions\ClassNotFoundException;
+use CraftyDigit\Puff\Exceptions\ConfigParamException;
 use CraftyDigit\Puff\Helper;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Cache\DefaultCacheFactory;
@@ -73,7 +74,7 @@ readonly class DataHandler implements DataHandlerInterface
                 $dbConfig = $this->config->db;
 
                 if ($dbConfig === null) {
-                    throw new \Exception('DB config is not set');
+                    throw new ConfigParamException('db');
                 }
 
                 $connection = DriverManager::getConnection(
