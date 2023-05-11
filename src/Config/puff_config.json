@@ -1,5 +1,8 @@
 {
   "mode": "dev",
+  "sessions": {
+    "enabled": true
+  },
   "di_container": {
     "services": {
       "CraftyDigit\\Puff\\Container\\ContainerExtendedInterface": "CraftyDigit\\Puff\\Container\\Container",

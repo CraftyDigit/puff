@@ -5,6 +5,7 @@ namespace CraftyDigit\Puff\Controller;
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\Router\RouterInterface;
+use CraftyDigit\Puff\Session\SessionInterface;
 
 abstract class AbstractController
 {
@@ -13,6 +14,7 @@ abstract class AbstractController
         protected readonly RouterInterface $router,
         protected readonly ControllerManagerInterface $controllerManager,
         protected readonly Config $config,
+        protected readonly SessionInterface $session,
     )
     {}
 }
