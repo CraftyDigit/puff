@@ -5,7 +5,7 @@ namespace CraftyDigit\Puff\Exceptions;
 use Exception;
 use Throwable;
 
-class FileNotFoundException extends Exception
+class FileNotFoundException extends FileSystemException
 {
     public function __construct(
         $message = "", 
