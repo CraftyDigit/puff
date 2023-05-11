@@ -11,6 +11,7 @@ use CraftyDigit\Puff\Enums\AppMode;
 use CraftyDigit\Puff\Enums\RequestMethod;
 use CraftyDigit\Puff\Exceptions\RequestMethodNotSupportedException;
 use CraftyDigit\Puff\Exceptions\RouteNotFoundException;
+use CraftyDigit\Puff\Http\HttpManagerInterface;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -21,6 +22,7 @@ class Router implements RouterInterface
         private readonly Config $config,
         private readonly ControllerManagerInterface $controllerManager,
         private readonly ContainerExtendedInterface $container,
+        private readonly HttpManagerInterface $httpManager,
         public array $routes = [],
     )
     {
@@ -66,9 +68,11 @@ class Router implements RouterInterface
         array $requestParams = [], 
         ?RequestMethod $requestMethod = null): void
     {
-        $url = $url ?? explode('?', $_SERVER['REQUEST_URI'])[0];
+        $serverRequest = $this->httpManager->getServerRequest();
         
-        $requestMethod = $requestMethod ?? RequestMethod::from($_SERVER['REQUEST_METHOD']);
+        $url = $url ?? $serverRequest->getUri()->getPath();
+        
+        $requestMethod = $requestMethod ?? RequestMethod::from($serverRequest->getMethod());
 
         $this->addParamsToGlobalRequestParams($requestParams, $requestMethod);
         
@@ -141,69 +145,16 @@ class Router implements RouterInterface
         return null;
     }
 
-    public function redirect(string $path, array $requestParams = [], RequestMethod $requestMethod = RequestMethod::GET): void
-    {
-        if ($requestMethod === RequestMethod::GET) {
-            if (!empty($requestParams)) {
-                $path .= '?' . http_build_query($requestParams);
-            }
-            header('Location: ' . $path);
-            exit;
-        }
-
-        if ($requestMethod === RequestMethod::POST) {
-            $formId = uniqid('form_');
-
-            $html = '<form style="display: none;" id="' . $formId . '" action="' . $path . '" method="post">';
-
-            foreach ($requestParams as $key => $value) {
-                if (is_array($value)) {
-                    foreach ($value as $subKey => $subValue) {
-                        $html .= '<input type="hidden" name="' . $key . '[' . $subKey . ']" value="' . $subValue . '">';
-                    }
-                } else {
-                    $html .= '<input type="hidden" name="' . $key . '" value="' . $value . '">';
-                }
-            }
-
-            $html .= '<input type="submit" value="Redirect">';
-            $html .= '</form>';
-            $html .= '<script> document.getElementById("' . $formId . '").submit() </script>';
-            
-            echo $html;
-            
-            exit;
-        }
-
-        throw new Exception('Invalid redirect method specified.');
-    }
-
-    public function redirectToRouteByName(string $name, array $requestParams = []): void
-    {
-        $route = $this->getRouteByName($name);
-
-        if (!$route) {
-            if (AppMode::from($this->config->mode) === AppMode::DEV) {
-                throw new RouteNotFoundException('Route with name "' . $name . '" not found');
-            } else {
-                $route = $this->getRouteByName('error_404');
-                $requestParams = [];
-            }
-        }
-
-        $redirectPath = $route['path'];
-        
-        $this->redirect($redirectPath, $requestParams, $route['requestMethod']);
-    }
-
     private function addParamsToGlobalRequestParams(
         array $params, RequestMethod $requestMethod = RequestMethod::GET): void
     {
+        $serverRequest = $this->httpManager->getServerRequest();
+        
         if ($params) {
             if ($requestMethod === RequestMethod::GET) {
-                $_GET += $params;
+                $serverRequest->withQueryParams($params);
             } else if ($requestMethod === RequestMethod::POST) {
-                $_POST += $params;
+                $serverRequest->withParsedBody($params);
             } else {
                 throw new RequestMethodNotSupportedException('Request method "' . $requestMethod . '" is not supported');
             }
