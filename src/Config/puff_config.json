@@ -1,5 +1,8 @@
 {
   "mode": "dev",
+  "sessions": {
+    "enabled": true
+  },
   "di_container": {
     "services": {
       "CraftyDigit\\Puff\\Container\\ContainerExtendedInterface": "CraftyDigit\\Puff\\Container\\Container",
@@ -9,7 +12,10 @@
       "CraftyDigit\\Puff\\Router\\RouterInterface": "CraftyDigit\\Puff\\Router\\Router",
       "CraftyDigit\\Puff\\Template\\TemplateInterface": "CraftyDigit\\Puff\\Template\\Template",
       "CraftyDigit\\Puff\\DataHandler\\DataHandlerInterface": "CraftyDigit\\Puff\\DataHandler\\DataHandler",
-      "CraftyDigit\\Puff\\Template\\TemplateEngineManagerInterface": "CraftyDigit\\Puff\\Template\\TemplateEngineManager"
+      "CraftyDigit\\Puff\\Template\\TemplateEngineManagerInterface": "CraftyDigit\\Puff\\Template\\TemplateEngineManager",
+      "CraftyDigit\\Puff\\Http\\HttpManagerInterface": "CraftyDigit\\Puff\\Http\\HttpManager",
+      "Psr\\Http\\Message\\ResponseInterface": "GuzzleHttp\\Psr7\\Response",
+      "CraftyDigit\\Puff\\Session\\SessionInterface": "CraftyDigit\\Puff\\Session\\Session"
     }
   },
   "additional_config_files": [
@@ -27,5 +33,13 @@
     "cache": "cache/twig",
     "template_extension": "html.twig",
     "debug": true
+  },
+  "http_client": {
+    "default": "guzzle",
+    "default_server_request_provider_method": "\\GuzzleHttp\\Psr7\\ServerRequest::fromGlobals"
+  },
+  "guzzle": {
+    "base_uri": "",
+    "timeout": 2.0
   }
 }

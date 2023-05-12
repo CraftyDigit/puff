@@ -3,7 +3,7 @@
 namespace CraftyDigit\Puff;
 
 use Composer\Autoload\ClassLoader;
-use Exception;
+use CraftyDigit\Puff\Exceptions\FileSystemException;
 
 class Helper
 {
@@ -25,7 +25,7 @@ class Helper
             return false;
         }
             
-        throw new Exception(
+        throw new FileSystemException(
             'Root folder not found. Please check your composer.json file. It should contain "App" namespace.'
         );    
     }
@@ -112,13 +112,13 @@ class Helper
         unset($ffs[array_search('..', $ffs, true)]);
 
         foreach($ffs as $ff){
-            if(is_dir($directoryPath.'/'.$ff)) {
-                $files = array_merge($files, $this->getDirectoryFiles($directoryPath.'/'.$ff));
+            if(is_dir($directoryPath. DIRECTORY_SEPARATOR .$ff)) {
+                $files = array_merge($files, $this->getDirectoryFiles($directoryPath. DIRECTORY_SEPARATOR .$ff));
             } else {
                 $appRootDirectory = $this->getAppRootDirectory();
                 $directoryName = str_replace($appRootDirectory, '', $directoryPath);
                 
-                $files[] = $directoryName . '/' . $ff;
+                $files[] = $directoryName . DIRECTORY_SEPARATOR . $ff;
             }
         }
 

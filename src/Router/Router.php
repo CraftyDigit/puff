@@ -9,10 +9,11 @@ use CraftyDigit\Puff\Controller\ControllerManagerInterface;
 use CraftyDigit\Puff\Attributes\Route;
 use CraftyDigit\Puff\Enums\AppMode;
 use CraftyDigit\Puff\Enums\RequestMethod;
+use CraftyDigit\Puff\Exceptions\RequestMethodNotSupportedException;
 use CraftyDigit\Puff\Exceptions\RouteNotFoundException;
+use CraftyDigit\Puff\Http\HttpManagerInterface;
 use ReflectionClass;
 use ReflectionMethod;
-use Exception;
 
 #[Singleton]
 class Router implements RouterInterface
@@ -21,6 +22,7 @@ class Router implements RouterInterface
         private readonly Config $config,
         private readonly ControllerManagerInterface $controllerManager,
         private readonly ContainerExtendedInterface $container,
+        private readonly HttpManagerInterface $httpManager,
         public array $routes = [],
     )
     {
@@ -61,30 +63,48 @@ class Router implements RouterInterface
         }
     }
 
-    public function followRoute(array $requestParams = []): void
+    public function followRoute(
+        ?string $url = null, 
+        array $requestParams = [], 
+        ?RequestMethod $requestMethod = null): void
     {
-        $path = explode('?', $_SERVER['REQUEST_URI'])[0];
+        $serverRequest = $this->httpManager->getServerRequest();
         
-        $requestMethod = RequestMethod::from($_SERVER['REQUEST_METHOD']);
+        $url = $url ?? $serverRequest->getUri()->getPath();
+        
+        $requestMethod = $requestMethod ?? RequestMethod::from($serverRequest->getMethod());
 
         $this->addParamsToGlobalRequestParams($requestParams, $requestMethod);
         
-        if (
-            isset($this->routes[$requestMethod->value][$path]) 
-            && $this->routes[$requestMethod->value][$path]['isPublic']
-        ) {
-            $controller = $this->routes[$requestMethod->value][$path]['controller'];
-            $method = $this->routes[$requestMethod->value][$path]['method'];
+        $controller = null;
+        $method = null;
+        $params = [];
+
+        foreach ($this->routes[$requestMethod->value] as $route) {
             
-            $controller = $this->container->get($controller);
-            
-            $controller->$method();
-        } else {
-            if (AppMode::from($this->config->mode) === AppMode::DEV) {
-                throw new RouteNotFoundException(route: $path);
-            } else {
-                $this->followRouteByName('error_404');
+            if (!$route['isPublic']) {
+                continue;
             }
+            
+            $pattern = $this->convertPathToRegex($route['path']);
+            
+            if (preg_match('#^' . $pattern . '$#', $url, $matches)) {
+                array_shift($matches); // remove the first element, which is the full match
+                
+                $params = $this->getParamsFromMatches($matches, $route['path']);
+
+                $controller = $this->container->get($route['controller']);
+                $method = $route['method'];
+                
+                break;
+            }
+            
+        }
+
+        if ($controller && $method && method_exists($controller, $method)) {
+            $controller->$method(...$params);
+        } else {
+            $this->handleRouteNotFound($url, $requestMethod);
         }
     }
 
@@ -125,72 +145,48 @@ class Router implements RouterInterface
         return null;
     }
 
-    public function redirect(string $path, array $requestParams = [], RequestMethod $method = RequestMethod::GET): void
-    {
-        if ($method === RequestMethod::GET) {
-            if (!empty($requestParams)) {
-                $path .= '?' . http_build_query($requestParams);
-            }
-            header('Location: ' . $path);
-            exit;
-        }
-
-        if ($method === RequestMethod::POST) {
-            $formId = uniqid('form_');
-
-            $html = '<form style="display: none;" id="' . $formId . '" action="' . $path . '" method="post">';
-
-            foreach ($requestParams as $key => $value) {
-                if (is_array($value)) {
-                    foreach ($value as $subKey => $subValue) {
-                        $html .= '<input type="hidden" name="' . $key . '[' . $subKey . ']" value="' . $subValue . '">';
-                    }
-                } else {
-                    $html .= '<input type="hidden" name="' . $key . '" value="' . $value . '">';
-                }
-            }
-
-            $html .= '<input type="submit" value="Redirect">';
-            $html .= '</form>';
-            $html .= '<script> document.getElementById("' . $formId . '").submit() </script>';
-            
-            echo $html;
-            
-            exit;
-        }
-
-        throw new Exception('Invalid redirect method specified.');
-    }
-
-    public function redirectToRouteByName(string $name, array $requestParams = []): void
-    {
-        $route = $this->getRouteByName($name);
-
-        if (!$route) {
-            if (AppMode::from($this->config->mode) === AppMode::DEV) {
-                throw new RouteNotFoundException('Route with name "' . $name . '" not found');
-            } else {
-                $route = $this->getRouteByName('error_404');
-                $requestParams = [];
-            }
-        }
-
-        $redirectPath = $route['path'];
-        
-        $this->redirect($redirectPath, $requestParams, $route['requestMethod']);
-    }
-
     private function addParamsToGlobalRequestParams(
         array $params, RequestMethod $requestMethod = RequestMethod::GET): void
     {
+        $serverRequest = $this->httpManager->getServerRequest();
+        
         if ($params) {
             if ($requestMethod === RequestMethod::GET) {
-                $_GET += $params;
+                $serverRequest->withQueryParams($params);
             } else if ($requestMethod === RequestMethod::POST) {
-                $_POST += $params;
+                $serverRequest->withParsedBody($params);
             } else {
-                throw new Exception('Request method "' . $requestMethod . '" not supported');
+                throw new RequestMethodNotSupportedException('Request method "' . $requestMethod . '" is not supported');
             }
+        }
+    }
+
+    private function convertPathToRegex(string $url): string 
+    {
+        $pattern = preg_replace('/\{(\w+)\}/', '(?P<$1>[^\/]+)', $url); // replace {parameter} with (?P<parameter>[^\/]+)
+        
+        return str_replace('/', '\/', $pattern); // escape slashes in the pattern
+    }
+
+    private function getParamsFromMatches(array $matches, string $path): array 
+    {
+        $params = [];
+        
+        preg_match_all('/\{(\w+)\}/', $path, $paramNames); // extract parameter names from the URL
+        
+        foreach ($paramNames[1] as $name) {
+            $params[] = $matches[$name];
+        }
+        
+        return $params;
+    }
+
+    private function handleRouteNotFound(string $url, RequestMethod $requestMethod)
+    {
+        if (AppMode::from($this->config->mode) === AppMode::DEV) {
+            throw new RouteNotFoundException(route: $url, requestMethod: $requestMethod);
+        } else {
+            $this->followRouteByName('error_404');
         }
     }
 }
