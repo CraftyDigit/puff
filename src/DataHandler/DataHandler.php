@@ -87,10 +87,10 @@ readonly class DataHandler implements DataHandlerInterface
 
                 $connection = DriverManager::getConnection(
                     params: [
-                        'driver' => 'pdo_mysql',
+                        'driver' => $dbConfig['driver'],
+                        'dbname' => $dbConfig['dbname'],
                         'user' => $dbConfig['user'],
                         'password' => $dbConfig['password'],
-                        'dbname' => $dbConfig['dbname'],
                         'host' => $dbConfig['host'],
                         'port' => $dbConfig['port'],
                     ],
