@@ -112,13 +112,13 @@ class Helper
         unset($ffs[array_search('..', $ffs, true)]);
 
         foreach($ffs as $ff){
-            if(is_dir($directoryPath.'/'.$ff)) {
-                $files = array_merge($files, $this->getDirectoryFiles($directoryPath.'/'.$ff));
+            if(is_dir($directoryPath. DIRECTORY_SEPARATOR .$ff)) {
+                $files = array_merge($files, $this->getDirectoryFiles($directoryPath. DIRECTORY_SEPARATOR .$ff));
             } else {
                 $appRootDirectory = $this->getAppRootDirectory();
                 $directoryName = str_replace($appRootDirectory, '', $directoryPath);
                 
-                $files[] = $directoryName . '/' . $ff;
+                $files[] = $directoryName . DIRECTORY_SEPARATOR . $ff;
             }
         }
 
