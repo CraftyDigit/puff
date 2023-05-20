@@ -29,6 +29,29 @@ class Helper
             'Root folder not found. Please check your composer.json file. It should contain "App" namespace.'
         );    
     }
+    
+    public function getPuffRootDirectory(bool $allowFalse = false): string | false
+    {
+        $loaders = ClassLoader::getRegisteredLoaders();
+
+        foreach ($loaders as $loader) {
+            $prefixes = $loader->getPrefixesPsr4();
+
+            foreach ($prefixes as $name => $path) {
+                if ($name === 'CraftyDigit\\Puff\\') {
+                    return $path[0];
+                }
+            }
+        }
+        
+        if ($allowFalse) {
+            return false;
+        }
+            
+        throw new FileSystemException(
+            'Root folder not found. Please check your composer.json file. It should contain "CraftyDigit\\Puff" namespace.'
+        );    
+    }
 
     public function getPathToAppSubDirectory(string $directoryName, bool $allowFalse = false): string | false
     {
@@ -39,6 +62,17 @@ class Helper
         }
 
         return $appRootDirectory . DIRECTORY_SEPARATOR . $directoryName;
+    }
+    
+    public function getPathToPuffSubDirectory(string $directoryName, bool $allowFalse = false): string | false
+    {
+        $puffRootDirectory = $this->getPuffRootDirectory($allowFalse);
+        
+        if ($puffRootDirectory === false) {
+            return false;
+        }
+
+        return $puffRootDirectory . DIRECTORY_SEPARATOR . $directoryName;
     }
     
     public function getPathToSrcSubDirectory(string $directoryName, bool $allowFalse = false): string | false
@@ -101,22 +135,45 @@ class Helper
         
         return $files;
     }
-
-    public function getDirectoryFiles($directoryPath): array
+    
+    public function getPuffDirectoryFiles($directoryName): array
     {
         $files = [];
+        
+        $directoryPath = $this->getPathToPuffSubDirectory($directoryName, true);
+        
+        if ($directoryPath === false) {
+            return $files;
+        }
+        
+        $files = $this->getDirectoryFiles($directoryPath, false);
+        
+        return $files;
+    }
 
+    public function getDirectoryFiles(string $directoryPath, bool $isAppRoot = true): array
+    {
+        if (!is_dir($directoryPath)) {
+            return [];
+        }
+        
         $ffs = scandir($directoryPath);
 
+        if ($ffs === false) {
+            return [];
+        }
+
+        $files = [];
+        
         unset($ffs[array_search('.', $ffs, true)]);
         unset($ffs[array_search('..', $ffs, true)]);
 
         foreach($ffs as $ff){
             if(is_dir($directoryPath. DIRECTORY_SEPARATOR .$ff)) {
-                $files = array_merge($files, $this->getDirectoryFiles($directoryPath. DIRECTORY_SEPARATOR .$ff));
+                $files = array_merge($files, $this->getDirectoryFiles($directoryPath. DIRECTORY_SEPARATOR .$ff, $isAppRoot));
             } else {
-                $appRootDirectory = $this->getAppRootDirectory();
-                $directoryName = str_replace($appRootDirectory, '', $directoryPath);
+                $rootDirectory = $isAppRoot ? $this->getAppRootDirectory() : $this->getPuffRootDirectory();
+                $directoryName = str_replace($rootDirectory, '', $directoryPath);
                 
                 $files[] = $directoryName . DIRECTORY_SEPARATOR . $ff;
             }
