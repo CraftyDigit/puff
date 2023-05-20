@@ -23,6 +23,7 @@ final readonly class Kernel
     function start(): void
     {
         $this->errorReporter->setHandlers();
+        $this->errorReporter->registerHandlers();
         $this->router->registerRoutes();
         $this->httpManager->setServerRequestFromDefault();
         $this->session->start();
