@@ -5,6 +5,8 @@
   },
   "di_container": {
     "services": {
+      "Psr\\Http\\Message\\ResponseInterface": "GuzzleHttp\\Psr7\\Response",
+      "Psr\\EventDispatcher\\EventDispatcherInterface": "CraftyDigit\\Puff\\EventDispatcher\\EventDispatcher",
       "CraftyDigit\\Puff\\Container\\ContainerExtendedInterface": "CraftyDigit\\Puff\\Container\\Container",
       "CraftyDigit\\Puff\\Controller\\ControllerManagerInterface": "CraftyDigit\\Puff\\Controller\\ControllerManager",
       "CraftyDigit\\Puff\\ErrorReporter\\ErrorReporterInterface": "CraftyDigit\\Puff\\ErrorReporter\\ErrorReporter",
@@ -14,8 +16,8 @@
       "CraftyDigit\\Puff\\DataHandler\\DataHandlerInterface": "CraftyDigit\\Puff\\DataHandler\\DataHandler",
       "CraftyDigit\\Puff\\Template\\TemplateEngineManagerInterface": "CraftyDigit\\Puff\\Template\\TemplateEngineManager",
       "CraftyDigit\\Puff\\Http\\HttpManagerInterface": "CraftyDigit\\Puff\\Http\\HttpManager",
-      "Psr\\Http\\Message\\ResponseInterface": "GuzzleHttp\\Psr7\\Response",
-      "CraftyDigit\\Puff\\Session\\SessionInterface": "CraftyDigit\\Puff\\Session\\Session"
+      "CraftyDigit\\Puff\\Session\\SessionInterface": "CraftyDigit\\Puff\\Session\\Session",
+      "CraftyDigit\\Puff\\EventDispatcher\\ListenerManagerInterface": "CraftyDigit\\Puff\\EventDispatcher\\ListenerManager"
     }
   },
   "additional_config_files": [
