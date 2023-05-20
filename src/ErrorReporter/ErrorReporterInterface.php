@@ -7,7 +7,7 @@ interface ErrorReporterInterface
     /**
      * This method enables correct error handling and reporting
      */
-    public function setHandlers(): void;
+    public function registerHandlers(): void;
 
     public function exceptionHandler($e): void;
 
