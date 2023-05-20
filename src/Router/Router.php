@@ -25,6 +25,9 @@ class Router implements RouterInterface
         private readonly HttpManagerInterface $httpManager,
         public array $routes = [],
     )
+    {}
+    
+    public function registerRoutes(): void
     {
         $this->registerControllersRoutes();
     }
