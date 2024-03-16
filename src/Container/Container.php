@@ -30,11 +30,11 @@ class Container implements ContainerExtendedInterface
     ): Container
     {
         static $instance = null;
-        
+
         if ($instance === null) {
             $instance = new Container(...func_get_args());
         }
-        
+
         return $instance;
     }
 
@@ -94,12 +94,12 @@ class Container implements ContainerExtendedInterface
         $reflector = new ReflectionClass($name);
         
         $isSingleton = !!$reflector->getAttributes(Singleton::class);
-        
+
+        // Service can't be instantiated or '__constructor' method is not public
         if (!$reflector->isInstantiable()) {
-            // Service can't be instantiated or '__constructor' method is not public
-            
+
+            // Service is a singleton class and has not been instantiated yet
             if ($reflector->hasMethod('getInstance')) {
-                // Service is a singleton class and has not been instantiated yet
                 $isSingleton = true;
                 
                 $constructor = $reflector->getMethod('getInstance');
@@ -107,14 +107,14 @@ class Container implements ContainerExtendedInterface
         }
 
         $constructor = $constructor ?? $reflector->getConstructor();
-        
+
+        // Service has no '__constructor' and no 'getInstance' method. Just instantiate it.
         if (
             is_null($constructor) 
             && !$reflector->isAbstract()
             && !$reflector->isInterface()
             && !$reflector->isTrait()
         ) {
-            // Service has no '__constructor' and no 'getInstance' method. Just instantiate it.
             return $reflector->newInstance();
         }
 
@@ -125,9 +125,9 @@ class Container implements ContainerExtendedInterface
         } else {
             $newInstance = $reflector->newInstanceArgs($dependencies);
         }
-        
+
+        // Service is a singleton. Save its instance.
         if ($isSingleton) {
-            // Service is a singleton. Save its instance.
             $this->instances[$name] = $newInstance;
         }
 
@@ -167,8 +167,8 @@ class Container implements ContainerExtendedInterface
             $param = $params[$i];
             $paramName = $param->getName();
 
+            // Preset params are named. Get them by name.
             if  ($presetParamsAreNamed) {
-                // Preset params are named. Get them by name.
                 if (array_key_exists($paramName, $presetParams)) {
                     $dependencies[] = $presetParams[$paramName];
                     continue;
@@ -181,8 +181,8 @@ class Container implements ContainerExtendedInterface
                 }
             }
 
+            // Dependency has default value. Use it.
             if ($param->isDefaultValueAvailable()) {
-                // Dependency has default value. Use it.
                 $dependencies[] = $param->getDefaultValue();
                 continue;
             }
@@ -202,8 +202,8 @@ class Container implements ContainerExtendedInterface
             }
 
             if ($paramType instanceof ReflectionNamedType) {
+                // Dependency is a primitive type. Throw an exception.
                 if ($paramType->isBuiltin()) {
-                    // Dependency is a primitive type. Throw an exception.
                     throw new ContainerException(
                         "'{$name}' service can't be resolved because '{$paramName}' param is not optional and has no default value"
                     );
