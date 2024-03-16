@@ -20,6 +20,7 @@ class HttpManager implements HttpManagerInterface
     public function __construct(
         protected readonly Config $config,
         protected readonly ContainerExtendedInterface $container,
+        protected readonly MiddlewareManagerInterface $middlewareManager,
         protected ?ServerRequestInterface $serverRequest = null,
     )
     {}

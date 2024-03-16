@@ -18,11 +18,15 @@
       "CraftyDigit\\Puff\\Http\\HttpManagerInterface": "CraftyDigit\\Puff\\Http\\HttpManager",
       "CraftyDigit\\Puff\\Session\\SessionInterface": "CraftyDigit\\Puff\\Session\\Session",
       "CraftyDigit\\Puff\\EventDispatcher\\ListenerManagerInterface": "CraftyDigit\\Puff\\EventDispatcher\\ListenerManager"
+      "CraftyDigit\\Puff\\Http\\MiddlewareManagerInterface": "CraftyDigit\\Puff\\Http\\MiddlewareManager"
     }
   },
   "additional_config_files": [
     "puff_config"
   ],
+  "middlewares": {
+    "disabled": []
+  },
   "default_data_handler": "doctrine",
   "doctrine": {
     "cache_enabled": true,
