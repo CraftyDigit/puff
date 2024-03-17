@@ -17,7 +17,8 @@
       "CraftyDigit\\Puff\\Template\\TemplateEngineManagerInterface": "CraftyDigit\\Puff\\Template\\TemplateEngineManager",
       "CraftyDigit\\Puff\\Http\\HttpManagerInterface": "CraftyDigit\\Puff\\Http\\HttpManager",
       "CraftyDigit\\Puff\\Session\\SessionInterface": "CraftyDigit\\Puff\\Session\\Session",
-      "CraftyDigit\\Puff\\EventDispatcher\\ListenerManagerInterface": "CraftyDigit\\Puff\\EventDispatcher\\ListenerManager"
+      "CraftyDigit\\Puff\\EventDispatcher\\EventDispatcherHelperInterface": "CraftyDigit\\Puff\\EventDispatcher\\EventDispatcherHelper",
+      "CraftyDigit\\Puff\\EventDispatcher\\ListenerManagerInterface": "CraftyDigit\\Puff\\EventDispatcher\\ListenerManager",
       "CraftyDigit\\Puff\\Http\\MiddlewareManagerInterface": "CraftyDigit\\Puff\\Http\\MiddlewareManager"
     }
   },
