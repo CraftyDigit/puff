@@ -4,6 +4,7 @@ namespace CraftyDigit\Puff\Template;
 
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
+use CraftyDigit\Puff\EventDispatcher\EventDispatcherHelperInterface;
 use CraftyDigit\Puff\Helper;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
@@ -16,6 +17,7 @@ class TwigTemplateEngine implements TemplateEngineInterface
         private readonly Config $config,
         private readonly ContainerExtendedInterface $container,
         private readonly FilesystemLoader $loader,
+        private readonly EventDispatcherHelperInterface $eventDispatcherHelper,
         private ?Environment $twig = null
     )
     {
@@ -47,7 +49,12 @@ class TwigTemplateEngine implements TemplateEngineInterface
     public function render(string $templateName, array $data = []): string
     {
         $templateName = $this->addExtToName($templateName);
-        
+
+        $data = (array) $this->eventDispatcherHelper->dispatchInNewEvent(
+            (object) $data,
+            'template.before_render'
+        );
+
         return $this->twig->render($templateName, $data);
     }
 
