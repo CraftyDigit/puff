@@ -28,7 +28,6 @@ final readonly class Kernel
         $this->listenerManager->registerListeners();
         $this->middlewareManager->registerMiddlewares();
         $this->router->registerRoutes();
-        $this->httpManager->setServerRequestFromDefault();
-        $this->router->followRoute();
+        $this->httpManager->processRequest();
     }
 }
