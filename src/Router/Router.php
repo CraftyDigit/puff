@@ -34,9 +34,9 @@ class Router implements RouterInterface
     protected function registerControllersRoutes(): void
     {
         // TODO: can use cache to store the routes, the same apply to static lists in other classes (like eventListeners, etc.)
-        $controllers = $this->controllerManager->getControllersClasses();
+        $controllersClasses = $this->controllerManager->getControllersClasses();
         
-        foreach ($controllers as $name => $class) {
+        foreach ($controllersClasses as $class) {
             $this->registerControllerRoutes($class);
         }
     }
@@ -124,8 +124,8 @@ class Router implements RouterInterface
 
     protected function getRouteByName(string $name): ?array
     {
-        foreach ($this->routes as $method => $routes) {
-            foreach ($routes as $path => $route) {
+        foreach ($this->routes as $methodRoutes) {
+            foreach ($methodRoutes as $route) {
                 if ($route['name'] === $name) {
                     return $route;
                 }
