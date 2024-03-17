@@ -8,8 +8,8 @@ class GenericEvent extends AbstractStoppableEvent
 {
     public function __construct(
         public readonly string $explicitName,
-        object $target,
-        bool $isPropagationStopped = false
+        public object $target,
+        protected bool $isPropagationStopped = false
     )
     {
         parent::__construct($target, $isPropagationStopped);

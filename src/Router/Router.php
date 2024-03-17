@@ -2,16 +2,16 @@
 
 namespace CraftyDigit\Puff\Router;
 
+use CraftyDigit\Puff\Attributes\Route;
 use CraftyDigit\Puff\Attributes\Singleton;
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\Controller\ControllerManagerInterface;
-use CraftyDigit\Puff\Attributes\Route;
 use CraftyDigit\Puff\Enums\AppMode;
 use CraftyDigit\Puff\Enums\RequestMethod;
-use CraftyDigit\Puff\Exceptions\RequestMethodNotSupportedException;
+use CraftyDigit\Puff\Exceptions\ControllerException;
 use CraftyDigit\Puff\Exceptions\RouteNotFoundException;
-use CraftyDigit\Puff\Http\HttpManagerInterface;
+use Psr\Http\Message\ResponseInterface;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -22,7 +22,6 @@ class Router implements RouterInterface
         private readonly Config $config,
         private readonly ControllerManagerInterface $controllerManager,
         private readonly ContainerExtendedInterface $container,
-        private readonly HttpManagerInterface $httpManager,
         public array $routes = [],
     )
     {}
@@ -34,6 +33,7 @@ class Router implements RouterInterface
 
     protected function registerControllersRoutes(): void
     {
+        // TODO: can use cache to store the routes, the same apply to static lists in other classes (like eventListeners, etc.)
         $controllers = $this->controllerManager->getControllersClasses();
         
         foreach ($controllers as $name => $class) {
@@ -51,7 +51,10 @@ class Router implements RouterInterface
             $attributes = $method->getAttributes(Route::class);
             
             foreach ($attributes as $attribute) {
-                
+                if ($method->getReturnType()->getName() !== ResponseInterface::class) {
+                    throw new ControllerException("Method '$method->name' in controller '$controllerClass' should return ResponseInterface");
+                }
+
                 $routeAttribute = $attribute->newInstance();
                 
                 $this->routes[$routeAttribute->requestMethod->name][$routeAttribute->path] = [
@@ -67,18 +70,10 @@ class Router implements RouterInterface
     }
 
     public function followRoute(
-        ?string $url = null, 
+        string $url, 
         array $requestParams = [], 
-        ?RequestMethod $requestMethod = null): void
+        RequestMethod $requestMethod = RequestMethod::GET): ResponseInterface
     {
-        $serverRequest = $this->httpManager->getServerRequest();
-        
-        $url = $url ?? $serverRequest->getUri()->getPath();
-        
-        $requestMethod = $requestMethod ?? RequestMethod::from($serverRequest->getMethod());
-
-        $this->addParamsToGlobalRequestParams($requestParams, $requestMethod);
-        
         $controller = null;
         $method = null;
         $params = [];
@@ -105,34 +100,26 @@ class Router implements RouterInterface
         }
 
         if ($controller && $method && method_exists($controller, $method)) {
-            $controller->$method(...$params);
+            return $controller->$method(...$params);
         } else {
-            $this->handleRouteNotFound($url, $requestMethod);
+            return $this->followRouteNotFound($url, $requestMethod);
         }
     }
 
-    public function followRouteByName(string $name, array $requestParams = []): void
+    public function followRouteByName(string $name, array $requestParams = []): ResponseInterface
     {
         $route = $this->getRouteByName($name);
 
         if (!$route) {
-            if (AppMode::from($this->config->mode) === AppMode::DEV) {
-                throw new RouteNotFoundException('Route with name "' . $name . '" not found');
-            } else {
-                $route = $this->getRouteByName('error_404');
-            }
+            return $this->followRouteNotFound($name, RequestMethod::GET, true);
         }
-
-        $requestMethod = $route['requestMethod'];
-
-        $this->addParamsToGlobalRequestParams($requestParams, $requestMethod);
 
         $controller = $route['controller'];
         $method = $route['method'];
         
-        $controller = $this->container->get($controller); 
-        
-        $controller->$method();
+        $controller = $this->container->get($controller);
+
+        return $controller->$method();
     }
 
     protected function getRouteByName(string $name): ?array
@@ -148,6 +135,9 @@ class Router implements RouterInterface
         return null;
     }
 
+    /* Not need?
+     * 
+     * 
     private function addParamsToGlobalRequestParams(
         array $params, RequestMethod $requestMethod = RequestMethod::GET): void
     {
@@ -163,6 +153,7 @@ class Router implements RouterInterface
             }
         }
     }
+    */
 
     private function convertPathToRegex(string $url): string 
     {
@@ -184,12 +175,16 @@ class Router implements RouterInterface
         return $params;
     }
 
-    private function handleRouteNotFound(string $url, RequestMethod $requestMethod)
+    private function followRouteNotFound(string $route, RequestMethod $requestMethod, bool $routeIsName = false): ResponseInterface
     {
         if (AppMode::from($this->config->mode) === AppMode::DEV) {
-            throw new RouteNotFoundException(route: $url, requestMethod: $requestMethod);
+            if ($routeIsName) {
+                throw new RouteNotFoundException('Route with name "' . $route . '" not found');
+            } else {
+                throw new RouteNotFoundException(route: $route, requestMethod: $requestMethod);
+            }
         } else {
-            $this->followRouteByName('error_404');
+            return $this->followRouteByName('error_404');
         }
     }
 }

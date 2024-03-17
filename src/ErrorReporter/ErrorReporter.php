@@ -4,6 +4,7 @@ namespace CraftyDigit\Puff\ErrorReporter;
 
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Enums\AppMode;
+use CraftyDigit\Puff\Http\HttpManagerInterface;
 use CraftyDigit\Puff\Router\RouterInterface;
 use ErrorException;
 
@@ -11,7 +12,8 @@ readonly class ErrorReporter implements ErrorReporterInterface
 {
     public function __construct(
         private Config $config,
-        private RouterInterface $router
+        private RouterInterface $router,
+        private HttpManagerInterface $httpManager,
     )
     {}
 
@@ -38,9 +40,9 @@ readonly class ErrorReporter implements ErrorReporterInterface
     public function exceptionHandler($e): void
     {
         error_log($e);
-        
+
         $errorCode = $e->getCode();
-        
+
         if ($errorCode === 404) {
             http_response_code(404);
         } else {
@@ -48,12 +50,18 @@ readonly class ErrorReporter implements ErrorReporterInterface
         }
 
         if (filter_var(ini_get('display_errors'), FILTER_VALIDATE_BOOLEAN)) {
-            echo $e;
-        } else {
-            $this->router->followRouteByName($errorCode === 404 ? 'error_404' : 'error_500');
-        }
+            // TODO: maybe make a component for this?
+            if (extension_loaded('xdebug') && $this->config->xdebug['use_exception_message']){
+                $debugMessage = '<table>'.$e->xdebug_message.'</table>';
+            } else {
+                $debugMessage =  $e;
+            }
 
-        exit;
+            echo $debugMessage;
+        } else {
+            $response = $this->router->followRouteByName($errorCode === 404 ? 'error_404' : 'error_500');
+            $this->httpManager->sendResponse($response);
+        }
     }
 
     public function errorHandler($level, $message, string $file = '', int $line = 0): void

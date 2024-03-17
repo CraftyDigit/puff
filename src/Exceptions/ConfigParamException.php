@@ -2,7 +2,10 @@
 
 namespace CraftyDigit\Puff\Exceptions;
 
-class ConfigParamException extends \Exception
+use Exception;
+use Throwable;
+
+class ConfigParamException extends Exception
 {
     public function __construct(
         $message = "", $code = 404, 

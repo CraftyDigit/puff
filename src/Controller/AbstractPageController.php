@@ -3,6 +3,7 @@
 namespace CraftyDigit\Puff\Controller;
 
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
+use CraftyDigit\Puff\Enums\ResponseType;
 use CraftyDigit\Puff\Template\TemplateEngineInterface;
 use CraftyDigit\Puff\Template\TemplateEngineManagerInterface;
 
@@ -15,7 +16,8 @@ abstract class AbstractPageController extends AbstractController
     )
     {
         $this->container->callMethod(parent::class, '__construct', target: $this);
-        
+
         $this->templateEngine = $this->templateEngineManager->getTemplateEngine();
+        $this->defaultResponseType = ResponseType::HTML;
     }
 }

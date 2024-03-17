@@ -5,9 +5,12 @@ namespace CraftyDigit\Puff\Http;
 use CraftyDigit\Puff\Attributes\Singleton;
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
+use CraftyDigit\Puff\Enums\RequestMethod;
 use CraftyDigit\Puff\Enums\ResponseType;
 use CraftyDigit\Puff\Exceptions\ClassNotFoundException;
 use CraftyDigit\Puff\Exceptions\ConfigParamException;
+use CraftyDigit\Puff\Exceptions\RequestMethodNotSupportedException;
+use CraftyDigit\Puff\Router\RouterInterface;
 use GuzzleHttp\Psr7\Stream;
 use http\Exception\RuntimeException;
 use Psr\Http\Client\ClientInterface;
@@ -20,6 +23,8 @@ class HttpManager implements HttpManagerInterface
     public function __construct(
         protected readonly Config $config,
         protected readonly ContainerExtendedInterface $container,
+        protected readonly RouterInterface $router,
+        protected readonly MiddlewareManagerInterface $middlewareManager,
         protected ?ServerRequestInterface $serverRequest = null,
     )
     {}
@@ -80,7 +85,7 @@ class HttpManager implements HttpManagerInterface
     ): ResponseInterface
     {
         $type = $type ?? ResponseType::HTML;
-        
+
         if ($type === ResponseType::REDIRECT) {
             $code = $code ?? 302;
             $codeMessage = $codeMessage ?? 'Found';
@@ -115,7 +120,6 @@ class HttpManager implements HttpManagerInterface
                 break;
 
             case ResponseType::REDIRECT:
-                
                 $response = $response->withHeader('Location', $data);
                 break;
             
@@ -169,5 +173,33 @@ class HttpManager implements HttpManagerInterface
     protected function sendContent(ResponseInterface $response): void
     {
         echo $response->getBody();
+    }
+
+    public function handle(ServerRequestInterface $request): ResponseInterface
+    {
+        $url = $request->getUri()->getPath();
+
+        $requestMethod = RequestMethod::tryFrom($request->getMethod());
+
+        if (is_null($requestMethod)) {
+            throw new RequestMethodNotSupportedException('Request method "' . $request->getMethod() . '" is not supported');
+        }
+
+        return $this->router->followRoute(url: $url, requestMethod: $requestMethod);
+    }
+
+    public function processRequest(?ServerRequestInterface $request = null): void
+    {
+        if (is_null($request)) {
+            $this->setServerRequestFromDefault();
+
+            $request = $this->getServerRequest();
+        } else {
+            $this->setServerRequest($request);
+        }
+
+        $response = $this->middlewareManager->handleMiddlewares($request, $this);
+
+        $this->sendResponse($response);
     }
 }

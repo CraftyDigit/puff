@@ -5,8 +5,9 @@ namespace CraftyDigit\Puff\Http;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-interface HttpManagerInterface
+interface HttpManagerInterface extends RequestHandlerInterface
 {
     /*
      * Return the PSR Http Client instance.
