@@ -8,16 +8,16 @@ use CraftyDigit\Puff\Exceptions\SessionException;
 class Session implements SessionInterface
 {
     public function __construct(
-        private Config $config
+        private readonly Config $config
     )
     {}
-    
+
     public function start(): void
     {
-        if (!isset($this->config->sessions['enabled']) || !$this->config->sessions['enabled']) {
+        if ($this->config->sessions['enabled'] ?? false) {
             return;
         }
-        
+
         if (session_status() === PHP_SESSION_ACTIVE) {
             throw new SessionException('Session already started');
         }
