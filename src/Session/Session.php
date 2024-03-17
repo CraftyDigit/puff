@@ -19,11 +19,11 @@ class Session implements SessionInterface
         }
 
         if (session_status() === PHP_SESSION_ACTIVE) {
-            throw new SessionException('Session already started');
+            throw new SessionException('Session is already started');
         }
 
         if (headers_sent($fileName, $lineNumber)) {
-            throw new SessionException("Headers already sent");
+            throw new SessionException("Headers already sent in $fileName on line $lineNumber - can't start session");
         }
         
         session_start();
