@@ -34,13 +34,6 @@ class PuffTemplateEngine implements TemplateEngineInterface
         return ob_get_clean() ?: '';
     }
 
-    public function display(string $templateName, array $data = []): void
-    {
-        $templateName = $this->addExtToName($templateName);
-        
-        echo $this->render($templateName, $data);
-    }
-
     private function addExtToName(string $templateName): string
     {
         return $templateName . '.' . $this->config->template_extension;

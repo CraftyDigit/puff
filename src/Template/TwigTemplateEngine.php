@@ -50,14 +50,7 @@ class TwigTemplateEngine implements TemplateEngineInterface
         
         return $this->twig->render($templateName, $data);
     }
-    
-    public function display(string $templateName, array $data = []): void
-    {
-        $templateName = $this->addExtToName($templateName);
 
-        $this->twig->display($templateName, $data);
-    }
-    
     private function addExtToName(string $templateName): string
     {
         return $templateName . '.' . $this->config->twig['template_extension'];
