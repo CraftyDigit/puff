@@ -50,7 +50,8 @@ readonly class ErrorReporter implements ErrorReporterInterface
         if (filter_var(ini_get('display_errors'), FILTER_VALIDATE_BOOLEAN)) {
             echo $e;
         } else {
-            $this->router->followRouteByName($errorCode === 404 ? 'error_404' : 'error_500');
+            $response = $this->router->followRouteByName($errorCode === 404 ? 'error_404' : 'error_500');
+            $this->httpManager->sendResponse($response);
         }
 
         exit;
