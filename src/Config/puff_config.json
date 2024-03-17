@@ -48,5 +48,8 @@
   "guzzle": {
     "base_uri": "",
     "timeout": 2.0
+  },
+  "xdebug": {
+    "use_exception_message": true
   }
 }
