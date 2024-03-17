@@ -33,15 +33,17 @@ class Config
         if (!file_exists($fileFullName)) {
             return;
         }
-        
-        $parameters = json_decode(file_get_contents($fileFullName), 1);
-        
+
+        $parameters = json_decode(file_get_contents($fileFullName), 1) ?? [];
+
         $this->parameters = $parameters + $this->parameters;
 
         $additionalConfigFiles = $parameters['additional_config_files'] ?? [];
         
         foreach ($additionalConfigFiles as $additionalConfigFileName) {
-            $additionalConfigFileFullName = $this->helper->getPathToSrcFile($additionalConfigFileName . '.json', true);
+            $additionalConfigFileFullName = $this->helper->getPathToSrcFile(
+                $additionalConfigFileName . '.json', true
+            );
             
             $this->loadParametersFromFile($additionalConfigFileFullName);
         }
