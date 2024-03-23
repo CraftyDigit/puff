@@ -40,7 +40,7 @@ class ListenerManager implements ListenerManagerInterface
 
         $listeners = [];
 
-        foreach ($this->listeners[$eventClass] as $priority => $listenersByPriority) {
+        foreach ($this->listeners[$eventClass] as $listenersByPriority) {
             foreach ($listenersByPriority as $listener) {
                 $listeners[] = $listener;
             }

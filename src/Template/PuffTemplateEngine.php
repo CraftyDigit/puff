@@ -28,7 +28,6 @@ class PuffTemplateEngine implements TemplateEngineInterface
         $template = $this->container->get(TemplateInterface::class, ['name' => $templateName]);
 
         $templatePath = $template->getPath();
-        $output = '';
 
         if (!$template->checkIfFileExists()) {
             throw new FileNotFoundException("Template file '$templatePath' is not exist!");

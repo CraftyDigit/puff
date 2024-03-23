@@ -185,7 +185,7 @@ class HttpManager implements HttpManagerInterface
             throw new RequestMethodNotSupportedException('Request method "' . $request->getMethod() . '" is not supported');
         }
 
-        return $this->router->followRoute(url: $url, requestMethod: $requestMethod);
+        return $this->router->followRoute($url, $request);
     }
 
     public function processRequest(?ServerRequestInterface $request = null): void

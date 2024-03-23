@@ -119,12 +119,13 @@ class Container implements ContainerExtendedInterface
         }
 
         $dependencies = $this->resolveMethodDependencies($constructor, $name, $params);
-                
-        if ($constructor->getName() === 'getInstance') {
-            $newInstance = $constructor->invoke(null, ...$dependencies);
-        } else {
-            $newInstance = $reflector->newInstanceArgs($dependencies);
-        }
+
+        // Only get a new instance from reflector if the standard constructor is used,
+        // otherwise, it's most likely a singleton with static 'getInstance' method.
+        $newInstance = $constructor->getName() !== '__construct' ?
+            null : $reflector->newInstanceWithoutConstructor();
+
+        $constructor->invokeArgs($newInstance, $dependencies);
 
         // Service is a singleton. Save its instance.
         if ($isSingleton) {
@@ -170,20 +171,20 @@ class Container implements ContainerExtendedInterface
             // Preset params are named. Get them by name.
             if  ($presetParamsAreNamed) {
                 if (array_key_exists($paramName, $presetParams)) {
-                    $dependencies[] = $presetParams[$paramName];
+                    $dependencies[$paramName] = $presetParams[$paramName];
                     continue;
                 }
             } else {
                 // Preset params are not named. Use them in order.
                 if (array_key_exists($i, $presetParams)) {
-                    $dependencies[] = $presetParams[$i];
+                    $dependencies[$paramName] = $presetParams[$i];
                     continue;
                 }
             }
 
             // Dependency has default value. Use it.
             if ($param->isDefaultValueAvailable()) {
-                $dependencies[] = $param->getDefaultValue();
+                $dependencies[$paramName] = $param->getDefaultValue();
                 continue;
             }
             
@@ -209,7 +210,7 @@ class Container implements ContainerExtendedInterface
                     );
                 } else {
                     // Dependency is a class. Resolve it.
-                    $dependencies[] = $this->get($paramType->getName());
+                    $dependencies[$paramName] = $this->get($paramType->getName());
                 }
             }
         }
