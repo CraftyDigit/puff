@@ -11,6 +11,7 @@ use CraftyDigit\Puff\Enums\AppMode;
 use CraftyDigit\Puff\Enums\RequestMethod;
 use CraftyDigit\Puff\Exceptions\ControllerException;
 use CraftyDigit\Puff\Exceptions\RouteNotFoundException;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionClass;
 use ReflectionMethod;
@@ -70,10 +71,11 @@ class Router implements RouterInterface
     }
 
     public function followRoute(
-        string $url, 
-        array $requestParams = [], 
-        RequestMethod $requestMethod = RequestMethod::GET): ResponseInterface
+        string $url,
+        ?RequestInterface $request = null
+    ): ResponseInterface
     {
+        $requestMethod = RequestMethod::tryFrom($request->getMethod());
         $controller = null;
         $method = null;
         $params = [];
@@ -91,7 +93,7 @@ class Router implements RouterInterface
                 
                 $params = $this->getParamsFromMatches($matches, $route['path']);
 
-                $controller = $this->container->get($route['controller']);
+                $controller = $this->container->get($route['controller'], ['request' => $request]);
                 $method = $route['method'];
                 
                 break;
@@ -102,22 +104,25 @@ class Router implements RouterInterface
         if ($controller && $method && method_exists($controller, $method)) {
             return $controller->$method(...$params);
         } else {
-            return $this->followRouteNotFound($url, $requestMethod);
+            return $this->routeNotFound($url, $request);
         }
     }
 
-    public function followRouteByName(string $name, array $requestParams = []): ResponseInterface
+    public function followRouteByName(
+        string $name,
+        ?RequestInterface $request = null
+    ): ResponseInterface
     {
         $route = $this->getRouteByName($name);
 
         if (!$route) {
-            return $this->followRouteNotFound($name, RequestMethod::GET, true);
+            return $this->routeNotFound($name, $request, true);
         }
 
         $controller = $route['controller'];
         $method = $route['method'];
         
-        $controller = $this->container->get($controller);
+        $controller = $this->container->get($controller, ['request' => $request]);
 
         return $controller->$method();
     }
@@ -134,26 +139,6 @@ class Router implements RouterInterface
         
         return null;
     }
-
-    /* Not need?
-     * 
-     * 
-    private function addParamsToGlobalRequestParams(
-        array $params, RequestMethod $requestMethod = RequestMethod::GET): void
-    {
-        $serverRequest = $this->httpManager->getServerRequest();
-        
-        if ($params) {
-            if ($requestMethod === RequestMethod::GET) {
-                $serverRequest->withQueryParams($params);
-            } else if ($requestMethod === RequestMethod::POST) {
-                $serverRequest->withParsedBody($params);
-            } else {
-                throw new RequestMethodNotSupportedException('Request method "' . $requestMethod . '" is not supported');
-            }
-        }
-    }
-    */
 
     private function convertPathToRegex(string $url): string 
     {
@@ -175,16 +160,22 @@ class Router implements RouterInterface
         return $params;
     }
 
-    private function followRouteNotFound(string $route, RequestMethod $requestMethod, bool $routeIsName = false): ResponseInterface
+    private function routeNotFound(
+        string $route,
+        ?RequestInterface $request = null,
+        bool $routeIsName = false
+    ): ResponseInterface
     {
         if (AppMode::from($this->config->mode) === AppMode::DEV) {
+            $requestMethod = RequestMethod::tryFrom($request->getMethod());
+
             if ($routeIsName) {
                 throw new RouteNotFoundException('Route with name "' . $route . '" not found');
             } else {
                 throw new RouteNotFoundException(route: $route, requestMethod: $requestMethod);
             }
         } else {
-            return $this->followRouteByName('error_404');
+            return $this->followRouteByName('error_404', $request);
         }
     }
 }

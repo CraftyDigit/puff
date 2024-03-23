@@ -6,6 +6,7 @@ use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\Enums\ResponseType;
 use CraftyDigit\Puff\Template\TemplateEngineInterface;
 use CraftyDigit\Puff\Template\TemplateEngineManagerInterface;
+use Psr\Http\Message\RequestInterface;
 
 abstract class AbstractPageController extends AbstractController
 {
@@ -13,11 +14,12 @@ abstract class AbstractPageController extends AbstractController
         protected ContainerExtendedInterface $container,
         protected readonly TemplateEngineManagerInterface $templateEngineManager,
         protected ?TemplateEngineInterface $templateEngine = null,
+        protected ?RequestInterface $request = null,
+        protected ResponseType $defaultResponseType = ResponseType::HTML,
     )
     {
-        $this->container->callMethod(parent::class, '__construct', target: $this);
+        $this->container->callMethod(parent::class, '__construct', get_defined_vars(), $this);
 
-        $this->templateEngine = $this->templateEngineManager->getTemplateEngine();
-        $this->defaultResponseType = ResponseType::HTML;
+        $this->templateEngine = $this->templateEngine ?? $this->templateEngineManager->getTemplateEngine();
     }
 }

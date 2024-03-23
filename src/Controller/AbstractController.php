@@ -9,6 +9,7 @@ use CraftyDigit\Puff\Enums\ResponseType;
 use CraftyDigit\Puff\Http\HttpManagerInterface;
 use CraftyDigit\Puff\Router\RouterInterface;
 use CraftyDigit\Puff\Session\SessionInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 abstract class AbstractController
@@ -22,6 +23,7 @@ abstract class AbstractController
         protected readonly SessionInterface $session,
         protected readonly DataHandlerInterface $dataHandler,
         protected ResponseType $defaultResponseType = ResponseType::JSON,
+        protected ?RequestInterface $request = null,
     )
     {}
 
