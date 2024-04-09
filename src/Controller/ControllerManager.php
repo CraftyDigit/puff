@@ -6,7 +6,7 @@ use CraftyDigit\Puff\Common\Attributes\Controller;
 use CraftyDigit\Puff\Common\Attributes\Singleton;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use ReflectionClass;
-use CraftyDigit\Puff\Exceptions\ClassNotFoundException;
+use CraftyDigit\Puff\Common\Exceptions\ClassNotFoundException;
 use CraftyDigit\Puff\Helper;
 
 #[Singleton]

@@ -1,6 +1,6 @@
 <?php
 
-namespace CraftyDigit\Puff\Exceptions\Container;
+namespace CraftyDigit\Puff\Common\Exceptions;
 
 use Exception;
 use Psr\Container\ContainerExceptionInterface;

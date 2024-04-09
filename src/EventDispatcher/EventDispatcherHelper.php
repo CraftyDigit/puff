@@ -3,7 +3,7 @@
 namespace CraftyDigit\Puff\EventDispatcher;
 
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
-use CraftyDigit\Puff\Exceptions\ClassNotFoundException;
+use CraftyDigit\Puff\Common\Exceptions\ClassNotFoundException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 class EventDispatcherHelper implements EventDispatcherHelperInterface

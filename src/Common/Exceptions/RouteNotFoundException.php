@@ -1,6 +1,6 @@
 <?php
 
-namespace CraftyDigit\Puff\Exceptions;
+namespace CraftyDigit\Puff\Common\Exceptions;
 
 use CraftyDigit\Puff\Common\Enums\RequestMethod;
 use Exception;

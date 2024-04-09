@@ -1,6 +1,6 @@
 <?php
 
-namespace CraftyDigit\Puff\Exceptions;
+namespace CraftyDigit\Puff\Common\Exceptions;
 
 use Exception;
 use Throwable;

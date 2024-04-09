@@ -3,7 +3,7 @@
 namespace CraftyDigit\Puff;
 
 use Composer\Autoload\ClassLoader;
-use CraftyDigit\Puff\Exceptions\FileSystemException;
+use CraftyDigit\Puff\Common\Exceptions\FileSystemException;
 
 class Helper
 {

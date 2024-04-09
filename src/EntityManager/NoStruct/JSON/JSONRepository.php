@@ -4,7 +4,7 @@ namespace CraftyDigit\Puff\EntityManager\NoStruct\JSON;
 
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\EntityManager\NoStruct\AbstractNoStructRepository;
-use CraftyDigit\Puff\Exceptions\FileNotFoundException;
+use CraftyDigit\Puff\Common\Exceptions\FileNotFoundException;
 use CraftyDigit\Puff\Helper;
 use CraftyDigit\Puff\Model\Model;
 use CraftyDigit\Puff\Model\ModelInterface;
