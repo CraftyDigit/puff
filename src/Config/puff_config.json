@@ -19,7 +19,7 @@
       "CraftyDigit\\Puff\\Session\\SessionInterface": "CraftyDigit\\Puff\\Session\\Session",
       "CraftyDigit\\Puff\\EventDispatcher\\EventDispatcherHelperInterface": "CraftyDigit\\Puff\\EventDispatcher\\EventDispatcherHelper",
       "CraftyDigit\\Puff\\EventDispatcher\\ListenerManagerInterface": "CraftyDigit\\Puff\\EventDispatcher\\ListenerManager",
-      "CraftyDigit\\Puff\\Http\\MiddlewareManagerInterface": "CraftyDigit\\Puff\\Http\\MiddlewareManager"
+      "CraftyDigit\\Puff\\Middleware\\MiddlewareManagerInterface": "CraftyDigit\\Puff\\Middleware\\MiddlewareManager"
     }
   },
   "additional_config_files": [

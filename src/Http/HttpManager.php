@@ -10,6 +10,7 @@ use CraftyDigit\Puff\Enums\ResponseType;
 use CraftyDigit\Puff\Exceptions\ClassNotFoundException;
 use CraftyDigit\Puff\Exceptions\ConfigParamException;
 use CraftyDigit\Puff\Exceptions\RequestMethodNotSupportedException;
+use CraftyDigit\Puff\Middleware\MiddlewareManagerInterface;
 use CraftyDigit\Puff\Router\RouteManagerInterface;
 use GuzzleHttp\Psr7\Stream;
 use http\Exception\RuntimeException;

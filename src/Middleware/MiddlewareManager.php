@@ -1,6 +1,6 @@
 <?php
 
-namespace CraftyDigit\Puff\Http;
+namespace CraftyDigit\Puff\Middleware;
 
 use CraftyDigit\Puff\Attributes\Middleware;
 use CraftyDigit\Puff\Attributes\Singleton;
@@ -57,7 +57,8 @@ class MiddlewareManager implements MiddlewareManagerInterface
             $filesNames[] = 'App' . $fileName;
         }
 
-        foreach ($this->helper->getPuffDirectoryFiles('Middlewares') as $fileName) {
+        $puffMiddlewaresDirectory = 'Middleware' . DIRECTORY_SEPARATOR . 'Middlewares';
+        foreach ($this->helper->getPuffDirectoryFiles($puffMiddlewaresDirectory) as $fileName) {
             $filesNames[] = 'CraftyDigit\Puff' . $fileName;
         }
 
@@ -102,6 +103,7 @@ class MiddlewareManager implements MiddlewareManagerInterface
 
     public function handleMiddlewares(ServerRequestInterface $request, RequestHandlerInterface $defaultHandler): ResponseInterface
     {
+        // TODO: come up with better name for this method
         $this->setDefaultHandler($defaultHandler);
         $this->setQueue($this->middlewares);
 

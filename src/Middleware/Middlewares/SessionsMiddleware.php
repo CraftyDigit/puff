@@ -1,6 +1,6 @@
 <?php
 
-namespace CraftyDigit\Puff\Middlewares;
+namespace CraftyDigit\Puff\Middleware\Middlewares;
 
 use CraftyDigit\Puff\Attributes\Middleware;
 use CraftyDigit\Puff\Session\SessionInterface;
@@ -12,6 +12,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 #[Middleware('sessions')]
 class SessionsMiddleware implements MiddlewareInterface
 {
+    // TODO: move "middlewares" folder to "http"
+
     public function __construct(
         protected readonly SessionInterface $session
     )

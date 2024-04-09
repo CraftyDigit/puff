@@ -1,6 +1,6 @@
 <?php
 
-namespace CraftyDigit\Puff\Http;
+namespace CraftyDigit\Puff\Middleware;
 
 use CraftyDigit\Puff\Common\Contracts\ResourceManagerInterface;
 use Psr\Http\Server\MiddlewareInterface;
