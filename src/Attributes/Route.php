@@ -3,7 +3,7 @@
 namespace CraftyDigit\Puff\Attributes;
 
 use Attribute;
-use CraftyDigit\Puff\Enums\RequestMethod;
+use CraftyDigit\Puff\Common\Enums\RequestMethod;
 
 #[Attribute(Attribute::TARGET_METHOD)]
 readonly class Route

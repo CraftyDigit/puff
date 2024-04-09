@@ -6,7 +6,7 @@ use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\EntityManager\NoStruct\JSON\JSONEntityManager;
 use CraftyDigit\Puff\EntityManager\NoStruct\NoStructEntityManagerInterface;
-use CraftyDigit\Puff\Enums\DataSourceType;
+use CraftyDigit\Puff\Common\Enums\DataSourceType;
 use CraftyDigit\Puff\Exceptions\ClassNotFoundException;
 use CraftyDigit\Puff\Exceptions\ConfigParamException;
 use CraftyDigit\Puff\Helper;

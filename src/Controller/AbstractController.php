@@ -5,7 +5,7 @@ namespace CraftyDigit\Puff\Controller;
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\DataHandler\DataHandlerInterface;
-use CraftyDigit\Puff\Enums\ResponseType;
+use CraftyDigit\Puff\Common\Enums\ResponseType;
 use CraftyDigit\Puff\Http\HttpManagerInterface;
 use CraftyDigit\Puff\Router\RouteManagerInterface;
 use CraftyDigit\Puff\Session\SessionInterface;

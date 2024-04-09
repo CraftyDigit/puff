@@ -4,7 +4,7 @@ namespace CraftyDigit\Puff\Template;
 
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
-use CraftyDigit\Puff\Enums\TemplateEngine;
+use CraftyDigit\Puff\Common\Enums\TemplateEngine;
 use CraftyDigit\Puff\Exceptions\ConfigParamException;
 
 class TemplateEngineManager implements TemplateEngineManagerInterface

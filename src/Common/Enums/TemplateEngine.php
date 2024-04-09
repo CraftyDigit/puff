@@ -1,6 +1,6 @@
 <?php
 
-namespace CraftyDigit\Puff\Enums;
+namespace CraftyDigit\Puff\Common\Enums;
 
 enum TemplateEngine: string
 {

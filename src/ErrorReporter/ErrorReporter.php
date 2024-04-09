@@ -3,7 +3,7 @@
 namespace CraftyDigit\Puff\ErrorReporter;
 
 use CraftyDigit\Puff\Config\Config;
-use CraftyDigit\Puff\Enums\AppMode;
+use CraftyDigit\Puff\Common\Enums\AppMode;
 use CraftyDigit\Puff\Http\HttpManagerInterface;
 use CraftyDigit\Puff\Router\RouteManagerInterface;
 use ErrorException;

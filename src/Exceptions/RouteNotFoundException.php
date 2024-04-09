@@ -2,7 +2,7 @@
 
 namespace CraftyDigit\Puff\Exceptions;
 
-use CraftyDigit\Puff\Enums\RequestMethod;
+use CraftyDigit\Puff\Common\Enums\RequestMethod;
 use Exception;
 use Throwable;
 
