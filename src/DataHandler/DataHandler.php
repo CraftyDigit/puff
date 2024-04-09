@@ -4,8 +4,8 @@ namespace CraftyDigit\Puff\DataHandler;
 
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
-use CraftyDigit\Puff\EntityManager\NoStruct\JSON\JSONEntityManager;
-use CraftyDigit\Puff\EntityManager\NoStruct\NoStructEntityManagerInterface;
+use CraftyDigit\Puff\EntityManager\NoSQL\JSON\JSONEntityManager;
+use CraftyDigit\Puff\EntityManager\NoSQL\NoSQLEntityManagerInterface;
 use CraftyDigit\Puff\Common\Enums\DataSourceType;
 use CraftyDigit\Puff\Common\Exceptions\ClassNotFoundException;
 use CraftyDigit\Puff\Common\Exceptions\ConfigParamException;
@@ -27,7 +27,7 @@ readonly class DataHandler implements DataHandlerInterface
     )
     {}
     
-    public function getEntityManager(?DataSourceType $dataSourceType = null): NoStructEntityManagerInterface|EntityManagerInterface
+    public function getEntityManager(?DataSourceType $dataSourceType = null): NoSQLEntityManagerInterface|EntityManagerInterface
     {
         if (!$dataSourceType) {
             $dataSourceType = DataSourceType::tryFrom($this->config->default_data_handler);

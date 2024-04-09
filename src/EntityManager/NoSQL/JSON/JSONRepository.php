@@ -1,16 +1,16 @@
 <?php
 
-namespace CraftyDigit\Puff\EntityManager\NoStruct\JSON;
+namespace CraftyDigit\Puff\EntityManager\NoSQL\JSON;
 
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
-use CraftyDigit\Puff\EntityManager\NoStruct\AbstractNoStructRepository;
+use CraftyDigit\Puff\EntityManager\NoSQL\AbstractNoSQLRepository;
 use CraftyDigit\Puff\Common\Exceptions\FileNotFoundException;
 use CraftyDigit\Puff\Helper;
 use CraftyDigit\Puff\Model\Model;
 use CraftyDigit\Puff\Model\ModelInterface;
 use Exception;
 
-class JSONRepository extends AbstractNoStructRepository 
+class JSONRepository extends AbstractNoSQLRepository
 {
     public function __construct(
         private readonly ContainerExtendedInterface $container,

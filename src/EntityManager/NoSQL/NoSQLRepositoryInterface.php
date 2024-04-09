@@ -1,10 +1,10 @@
 <?php
 
-namespace CraftyDigit\Puff\EntityManager\NoStruct;
+namespace CraftyDigit\Puff\EntityManager\NoSQL;
 
 use CraftyDigit\Puff\Model\Model;
 
-interface NoStructRepositoryInterface
+interface NoSQLRepositoryInterface
 {
     public function findAll(): array;
     
