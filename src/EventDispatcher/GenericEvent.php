@@ -1,6 +1,6 @@
 <?php
 
-namespace CraftyDigit\Puff\Events;
+namespace CraftyDigit\Puff\EventDispatcher;
 
 use CraftyDigit\Puff\EventDispatcher\AbstractStoppableEvent;
 

@@ -5,7 +5,6 @@ namespace CraftyDigit\Puff\EventDispatcher;
 use CraftyDigit\Puff\Attributes\EventListener;
 use CraftyDigit\Puff\Attributes\Singleton;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
-use CraftyDigit\Puff\Events\GenericEvent;
 use CraftyDigit\Puff\Helper;
 use ReflectionClass;
 
