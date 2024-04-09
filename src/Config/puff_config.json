@@ -11,7 +11,7 @@
       "CraftyDigit\\Puff\\Controller\\ControllerManagerInterface": "CraftyDigit\\Puff\\Controller\\ControllerManager",
       "CraftyDigit\\Puff\\ErrorReporter\\ErrorReporterInterface": "CraftyDigit\\Puff\\ErrorReporter\\ErrorReporter",
       "CraftyDigit\\Puff\\Model\\ModelInterface": "CraftyDigit\\Puff\\Model\\Model",
-      "CraftyDigit\\Puff\\Router\\RouterInterface": "CraftyDigit\\Puff\\Router\\Router",
+      "CraftyDigit\\Puff\\Router\\RouteManagerInterface": "CraftyDigit\\Puff\\Router\\RouteManager",
       "CraftyDigit\\Puff\\Template\\TemplateInterface": "CraftyDigit\\Puff\\Template\\Template",
       "CraftyDigit\\Puff\\DataHandler\\DataHandlerInterface": "CraftyDigit\\Puff\\DataHandler\\DataHandler",
       "CraftyDigit\\Puff\\Template\\TemplateEngineManagerInterface": "CraftyDigit\\Puff\\Template\\TemplateEngineManager",

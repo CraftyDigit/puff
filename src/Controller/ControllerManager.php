@@ -18,10 +18,15 @@ class ControllerManager implements ControllerManagerInterface
         private array $controllersClasses = [],
     )
     {
-        $this->setControllersClasses();
+        $this->registerResources();
+    }
+    
+    public function registerResources(): void
+    {
+        $this->registerFromAttributes();
     }
 
-    private function setControllersClasses(): void
+    private function registerFromAttributes(): void
     {
         $classes = [];
 

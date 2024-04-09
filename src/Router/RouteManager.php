@@ -17,7 +17,7 @@ use ReflectionClass;
 use ReflectionMethod;
 
 #[Singleton]
-class Router implements RouterInterface
+class RouteManager implements RouteManagerInterface
 {
     public function __construct(
         private readonly Config $config,
@@ -25,9 +25,11 @@ class Router implements RouterInterface
         private readonly ContainerExtendedInterface $container,
         public array $routes = [],
     )
-    {}
+    {
+        $this->registerResources();
+    }
     
-    public function registerRoutes(): void
+    public function registerResources(): void
     {
         $this->registerControllersRoutes();
     }
@@ -127,7 +129,7 @@ class Router implements RouterInterface
         return $controller->$method();
     }
 
-    protected function getRouteByName(string $name): ?array
+    public function getRouteByName(string $name): ?array
     {
         foreach ($this->routes as $methodRoutes) {
             foreach ($methodRoutes as $route) {

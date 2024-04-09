@@ -10,7 +10,7 @@ use CraftyDigit\Puff\Enums\ResponseType;
 use CraftyDigit\Puff\Exceptions\ClassNotFoundException;
 use CraftyDigit\Puff\Exceptions\ConfigParamException;
 use CraftyDigit\Puff\Exceptions\RequestMethodNotSupportedException;
-use CraftyDigit\Puff\Router\RouterInterface;
+use CraftyDigit\Puff\Router\RouteManagerInterface;
 use GuzzleHttp\Psr7\Stream;
 use http\Exception\RuntimeException;
 use Psr\Http\Client\ClientInterface;
@@ -23,7 +23,7 @@ class HttpManager implements HttpManagerInterface
     public function __construct(
         protected readonly Config $config,
         protected readonly ContainerExtendedInterface $container,
-        protected readonly RouterInterface $router,
+        protected readonly RouteManagerInterface $routeManager,
         protected readonly MiddlewareManagerInterface $middlewareManager,
         protected ?ServerRequestInterface $serverRequest = null,
     )
@@ -185,7 +185,7 @@ class HttpManager implements HttpManagerInterface
             throw new RequestMethodNotSupportedException('Request method "' . $request->getMethod() . '" is not supported');
         }
 
-        return $this->router->followRoute($url, $request);
+        return $this->routeManager->followRoute($url, $request);
     }
 
     public function processRequest(?ServerRequestInterface $request = null): void

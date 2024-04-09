@@ -7,7 +7,7 @@ use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\DataHandler\DataHandlerInterface;
 use CraftyDigit\Puff\Enums\ResponseType;
 use CraftyDigit\Puff\Http\HttpManagerInterface;
-use CraftyDigit\Puff\Router\RouterInterface;
+use CraftyDigit\Puff\Router\RouteManagerInterface;
 use CraftyDigit\Puff\Session\SessionInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -16,7 +16,7 @@ abstract class AbstractController
 {
     public function __construct(
         protected ContainerExtendedInterface $container,
-        protected readonly RouterInterface $router,
+        protected readonly RouteManagerInterface $routeManager,
         protected readonly ControllerManagerInterface $controllerManager,
         protected readonly Config $config,
         protected readonly HttpManagerInterface $httpManager,

@@ -5,14 +5,14 @@ namespace CraftyDigit\Puff\ErrorReporter;
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Enums\AppMode;
 use CraftyDigit\Puff\Http\HttpManagerInterface;
-use CraftyDigit\Puff\Router\RouterInterface;
+use CraftyDigit\Puff\Router\RouteManagerInterface;
 use ErrorException;
 
 readonly class ErrorReporter implements ErrorReporterInterface
 {
     public function __construct(
         private Config $config,
-        private RouterInterface $router,
+        private RouteManagerInterface $routeManager,
         private HttpManagerInterface $httpManager,
     )
     {}
@@ -59,7 +59,7 @@ readonly class ErrorReporter implements ErrorReporterInterface
 
             echo $debugMessage;
         } else {
-            $response = $this->router->followRouteByName($errorCode === 404 ? 'error_404' : 'error_500');
+            $response = $this->routeManager->followRouteByName($errorCode === 404 ? 'error_404' : 'error_500');
             $this->httpManager->sendResponse($response);
         }
     }

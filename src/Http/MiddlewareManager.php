@@ -25,7 +25,9 @@ class MiddlewareManager implements MiddlewareManagerInterface
         protected array $middlewares = [],
         protected array $queue = [],
     )
-    {}
+    {
+        $this->registerResources();
+    }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
@@ -42,17 +44,12 @@ class MiddlewareManager implements MiddlewareManagerInterface
         return $middleware->process($request, $this);
     }
 
-    public function registerMiddlewares(): void
+    public function registerResources(): void
     {
-        $this->registerExplicitMiddlewares();
+        $this->registerFromAttributes();
     }
 
-    private function registerExplicitMiddlewares(): void
-    {
-        $this->registerListenersFromAttributes();
-    }
-
-    private function registerListenersFromAttributes(): void
+    private function registerFromAttributes(): void
     {
         $filesNames = [];
 
