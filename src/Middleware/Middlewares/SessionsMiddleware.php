@@ -12,8 +12,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 #[Middleware('sessions')]
 class SessionsMiddleware implements MiddlewareInterface
 {
-    // TODO: move "middlewares" folder to "http"
-
     public function __construct(
         protected readonly SessionInterface $session
     )
