@@ -1,6 +1,6 @@
 <?php
 
-namespace CraftyDigit\Puff\Attributes;
+namespace CraftyDigit\Puff\Common\Attributes;
 
 use Attribute;
 use CraftyDigit\Puff\Common\Enums\RequestMethod;

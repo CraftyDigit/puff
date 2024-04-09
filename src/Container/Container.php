@@ -2,7 +2,7 @@
 
 namespace CraftyDigit\Puff\Container;
 
-use CraftyDigit\Puff\Attributes\Singleton;
+use CraftyDigit\Puff\Common\Attributes\Singleton;
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Exceptions\Container\ContainerException;
 use CraftyDigit\Puff\Exceptions\Container\ServiceNotFoundException;

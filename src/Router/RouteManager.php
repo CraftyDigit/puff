@@ -2,8 +2,8 @@
 
 namespace CraftyDigit\Puff\Router;
 
-use CraftyDigit\Puff\Attributes\Route;
-use CraftyDigit\Puff\Attributes\Singleton;
+use CraftyDigit\Puff\Common\Attributes\Route;
+use CraftyDigit\Puff\Common\Attributes\Singleton;
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\Controller\ControllerManagerInterface;
