@@ -2,7 +2,7 @@
 
 namespace CraftyDigit\Puff\Config;
 
-use CraftyDigit\Puff\Attributes\Singleton;
+use CraftyDigit\Puff\Common\Attributes\Singleton;
 use CraftyDigit\Puff\Helper;
 
 #[Singleton]
