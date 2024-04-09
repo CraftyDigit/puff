@@ -2,7 +2,7 @@
 
 namespace CraftyDigit\Puff\Middleware\Middlewares;
 
-use CraftyDigit\Puff\Attributes\Middleware;
+use CraftyDigit\Puff\Common\Attributes\Middleware;
 use CraftyDigit\Puff\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

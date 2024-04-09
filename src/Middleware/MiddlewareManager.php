@@ -2,8 +2,8 @@
 
 namespace CraftyDigit\Puff\Middleware;
 
-use CraftyDigit\Puff\Attributes\Middleware;
-use CraftyDigit\Puff\Attributes\Singleton;
+use CraftyDigit\Puff\Common\Attributes\Middleware;
+use CraftyDigit\Puff\Common\Attributes\Singleton;
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\Helper;
