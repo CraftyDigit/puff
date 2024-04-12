@@ -10,25 +10,36 @@ class Config
 {
     public function __construct(
         private readonly Helper $helper,
-        private array $parameters = []
+        private array $parameters = [],
+        private array $defaultParameters = []
     )
     {
         $this->loadConfig();
     }
-    
-    public function __get($name)
+
+    public function __get(string $name): mixed
     {
-        return $this->parameters[$name] ?? null;
+        return $this->parameters[$name] ?? ($this->defaultParameters[$name] ?? null);
     }
-    
+
+    public function __set(string $name, $value): void
+    {
+        $this->parameters[$name] = $value;
+    }
+
+    public function getDefault(string $name): mixed
+    {
+        return $this->defaultParameters[$name] ?? null;
+    }
+
     private function loadConfig(): void
     {
         $defaultConfigFile = dirname(__FILE__) . '/puff_config.json';
         
-        $this->loadParametersFromFile($defaultConfigFile);
+        $this->loadConfigFromFile($defaultConfigFile);
     }
 
-    private function loadParametersFromFile(string $fileFullName): void
+    private function loadConfigFromFile(string $fileFullName): void
     {
         if (!file_exists($fileFullName)) {
             return;
@@ -36,7 +47,7 @@ class Config
 
         $parameters = json_decode(file_get_contents($fileFullName), 1) ?? [];
 
-        $this->parameters = $parameters + $this->parameters;
+        $this->defaultParameters = $parameters + $this->defaultParameters;
 
         $additionalConfigFiles = $parameters['additional_config_files'] ?? [];
         
@@ -45,7 +56,7 @@ class Config
                 $additionalConfigFileName . '.json', true
             );
             
-            $this->loadParametersFromFile($additionalConfigFileFullName);
+            $this->loadConfigFromFile($additionalConfigFileFullName);
         }
     }
 }
