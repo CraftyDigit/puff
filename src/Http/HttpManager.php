@@ -199,7 +199,7 @@ class HttpManager implements HttpManagerInterface
             $this->setServerRequest($request);
         }
 
-        $response = $this->middlewareManager->handleMiddlewares($request, $this);
+        $response = $this->middlewareManager->handleAll($request, $this);
 
         $this->sendResponse($response);
     }

@@ -101,9 +101,8 @@ class MiddlewareManager implements MiddlewareManagerInterface
         return $this->middlewares;
     }
 
-    public function handleMiddlewares(ServerRequestInterface $request, RequestHandlerInterface $defaultHandler): ResponseInterface
+    public function handleAll(ServerRequestInterface $request, RequestHandlerInterface $defaultHandler): ResponseInterface
     {
-        // TODO: come up with better name for this method
         $this->setDefaultHandler($defaultHandler);
         $this->setQueue($this->middlewares);
 
