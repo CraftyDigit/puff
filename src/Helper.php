@@ -181,20 +181,4 @@ class Helper
 
         return $files;    
     }
-    
-    public function sortArrayByFields(array $array, array $fields) : array
-    {
-        usort($array, function($a, $b) use ($fields) {
-            foreach($fields as $field) {
-                $valueA = $a[$field];
-                $valueB = $b[$field];
-                if ($valueA != $valueB) {
-                    return ($valueA < $valueB) ? -1 : 1;
-                }
-            }
-            return 0;
-        });
-        
-        return $array;
-    }
 }

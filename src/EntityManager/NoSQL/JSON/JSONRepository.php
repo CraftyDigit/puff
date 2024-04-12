@@ -169,22 +169,19 @@ class JSONRepository extends AbstractNoSQLRepository
                 $items[] = $dataItem;
             }
         }
-        
+
         if ($orderBy) {
-            if (sizeof($orderBy) > 1) {
-                throw new Exception('Only ordering by one field is supported');
+            $multisortParams = [];
+            foreach ($orderBy as $field => $order) {
+                $multisortParams[] = array_column($items, $field);
+                $multisortParams[] = strtolower($order) === 'desc' ? SORT_DESC : SORT_ASC;
             }
 
-            $field = array_keys($orderBy)[0];
-            $order = array_values($orderBy)[0];
-            
-            $items = $this->helper->sortArrayByFields($items, [$field]);
-            
-            if (strtolower($order) === 'desc') {
-                $items = array_reverse($items);
-            }
+            $multisortParams[] = &$items;
+
+            array_multisort(...$multisortParams);
         }
-        
+
         foreach ($items as $idx => $item) {
             $items[$idx] = $this->container->get(ModelInterface::class, ['data' => $item]);
         }
