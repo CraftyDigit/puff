@@ -38,7 +38,11 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "CraftyDigit\\Puff\\Tests\\": "Tests/"
+            "CraftyDigit\\PuffTests\\Tests\\": "tests/tests/",
+            "CraftyDigit\\PuffTests\\Utils\\": "tests/src/",
+            "App\\": "tests/fixtures/app/",
+            "PHPUnit\\Metadata\\": "vendor/phpunit/phpunit/src/Metadata",
+            "PHPUnit\\Metadata\\Annotation\\Parser\\": "vendor/phpunit/phpunit/src/Metadata/Parser/Annotation"
         }
     }
 }
