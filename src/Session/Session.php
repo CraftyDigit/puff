@@ -3,7 +3,7 @@
 namespace CraftyDigit\Puff\Session;
 
 use CraftyDigit\Puff\Config\Config;
-use CraftyDigit\Puff\Exceptions\SessionException;
+use CraftyDigit\Puff\Common\Exceptions\SessionException;
 
 class Session implements SessionInterface
 {

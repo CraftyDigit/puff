@@ -1,7 +1,8 @@
 .idea
 vendor
-.phpunit.result.cache
 Dockerfile
 docker-compose.yaml
 .htaccess
 src/sync.ffs_db
+tests/.phpunit.result.cache
+tests/fixtures/app/cache/

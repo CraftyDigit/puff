@@ -2,7 +2,7 @@
 
 namespace CraftyDigit\Puff\Template;
 
-use CraftyDigit\Puff\Enums\TemplateEngine;
+use CraftyDigit\Puff\Common\Enums\TemplateEngine;
 
 interface TemplateEngineManagerInterface
 {

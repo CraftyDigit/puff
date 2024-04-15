@@ -5,7 +5,7 @@ namespace CraftyDigit\Puff\Template;
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use CraftyDigit\Puff\EventDispatcher\EventDispatcherHelperInterface;
-use CraftyDigit\Puff\Exceptions\FileNotFoundException;
+use CraftyDigit\Puff\Common\Exceptions\FileNotFoundException;
 
 class PuffTemplateEngine implements TemplateEngineInterface
 {

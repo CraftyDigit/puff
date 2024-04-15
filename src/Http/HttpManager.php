@@ -2,15 +2,16 @@
 
 namespace CraftyDigit\Puff\Http;
 
-use CraftyDigit\Puff\Attributes\Singleton;
+use CraftyDigit\Puff\Common\Attributes\Singleton;
 use CraftyDigit\Puff\Config\Config;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
-use CraftyDigit\Puff\Enums\RequestMethod;
-use CraftyDigit\Puff\Enums\ResponseType;
-use CraftyDigit\Puff\Exceptions\ClassNotFoundException;
-use CraftyDigit\Puff\Exceptions\ConfigParamException;
-use CraftyDigit\Puff\Exceptions\RequestMethodNotSupportedException;
-use CraftyDigit\Puff\Router\RouterInterface;
+use CraftyDigit\Puff\Common\Enums\RequestMethod;
+use CraftyDigit\Puff\Common\Enums\ResponseType;
+use CraftyDigit\Puff\Common\Exceptions\ClassNotFoundException;
+use CraftyDigit\Puff\Common\Exceptions\ConfigParamException;
+use CraftyDigit\Puff\Common\Exceptions\RequestMethodNotSupportedException;
+use CraftyDigit\Puff\Middleware\MiddlewareManagerInterface;
+use CraftyDigit\Puff\Router\RouteManagerInterface;
 use GuzzleHttp\Psr7\Stream;
 use http\Exception\RuntimeException;
 use Psr\Http\Client\ClientInterface;
@@ -23,7 +24,7 @@ class HttpManager implements HttpManagerInterface
     public function __construct(
         protected readonly Config $config,
         protected readonly ContainerExtendedInterface $container,
-        protected readonly RouterInterface $router,
+        protected readonly RouteManagerInterface $routeManager,
         protected readonly MiddlewareManagerInterface $middlewareManager,
         protected ?ServerRequestInterface $serverRequest = null,
     )
@@ -185,7 +186,7 @@ class HttpManager implements HttpManagerInterface
             throw new RequestMethodNotSupportedException('Request method "' . $request->getMethod() . '" is not supported');
         }
 
-        return $this->router->followRoute($url, $request);
+        return $this->routeManager->followRoute($url, $request);
     }
 
     public function processRequest(?ServerRequestInterface $request = null): void
@@ -198,7 +199,7 @@ class HttpManager implements HttpManagerInterface
             $this->setServerRequest($request);
         }
 
-        $response = $this->middlewareManager->handleMiddlewares($request, $this);
+        $response = $this->middlewareManager->handleAll($request, $this);
 
         $this->sendResponse($response);
     }

@@ -2,11 +2,11 @@
 
 namespace CraftyDigit\Puff\Controller;
 
-use CraftyDigit\Puff\Attributes\Controller;
-use CraftyDigit\Puff\Attributes\Singleton;
+use CraftyDigit\Puff\Common\Attributes\Controller;
+use CraftyDigit\Puff\Common\Attributes\Singleton;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
 use ReflectionClass;
-use CraftyDigit\Puff\Exceptions\ClassNotFoundException;
+use CraftyDigit\Puff\Common\Exceptions\ClassNotFoundException;
 use CraftyDigit\Puff\Helper;
 
 #[Singleton]
@@ -18,10 +18,15 @@ class ControllerManager implements ControllerManagerInterface
         private array $controllersClasses = [],
     )
     {
-        $this->setControllersClasses();
+        $this->registerResources();
     }
 
-    private function setControllersClasses(): void
+    public function registerResources(): void
+    {
+        $this->registerFromAttributes();
+    }
+
+    private function registerFromAttributes(): void
     {
         $classes = [];
 

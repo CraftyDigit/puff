@@ -2,10 +2,9 @@
 
 namespace CraftyDigit\Puff\EventDispatcher;
 
-use CraftyDigit\Puff\Attributes\EventListener;
-use CraftyDigit\Puff\Attributes\Singleton;
+use CraftyDigit\Puff\Common\Attributes\EventListener;
+use CraftyDigit\Puff\Common\Attributes\Singleton;
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
-use CraftyDigit\Puff\Events\GenericEvent;
 use CraftyDigit\Puff\Helper;
 use ReflectionClass;
 
@@ -17,11 +16,13 @@ class ListenerManager implements ListenerManagerInterface
         protected ContainerExtendedInterface $container,
         private array $listeners = [],
     )
-    {}
-    
-    public function registerListeners(): void
     {
-        $this->registerExplicitListeners();
+        $this->registerResources();
+    }
+    
+    public function registerResources(): void
+    {
+        $this->registerFromAttributes();
     }
 
     public function setListenerForEvent(string $eventName, callable $listener, int $priority = 0): void
@@ -49,12 +50,7 @@ class ListenerManager implements ListenerManagerInterface
         return array_reverse($listeners);
     }
 
-    protected function registerExplicitListeners(): void
-    {
-        $this->registerListenersFromAttributes();
-    }
-    
-    protected function registerListenersFromAttributes(): void
+    protected function registerFromAttributes(): void
     {
         $filesNames = [];
         

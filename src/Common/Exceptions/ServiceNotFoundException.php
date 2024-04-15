@@ -1,0 +1,9 @@
+<?php
+
+namespace CraftyDigit\Puff\Common\Exceptions;
+
+use Exception;
+use Psr\Container\NotFoundExceptionInterface;
+
+class ServiceNotFoundException extends Exception implements NotFoundExceptionInterface
+{}

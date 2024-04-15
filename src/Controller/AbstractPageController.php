@@ -3,7 +3,7 @@
 namespace CraftyDigit\Puff\Controller;
 
 use CraftyDigit\Puff\Container\ContainerExtendedInterface;
-use CraftyDigit\Puff\Enums\ResponseType;
+use CraftyDigit\Puff\Common\Enums\ResponseType;
 use CraftyDigit\Puff\Template\TemplateEngineInterface;
 use CraftyDigit\Puff\Template\TemplateEngineManagerInterface;
 use Psr\Http\Message\RequestInterface;

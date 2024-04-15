@@ -3,7 +3,7 @@
 namespace CraftyDigit\Puff;
 
 use Composer\Autoload\ClassLoader;
-use CraftyDigit\Puff\Exceptions\FileSystemException;
+use CraftyDigit\Puff\Common\Exceptions\FileSystemException;
 
 class Helper
 {
@@ -180,21 +180,5 @@ class Helper
         }
 
         return $files;    
-    }
-    
-    public function sortArrayByFields(array $array, array $fields) : array
-    {
-        usort($array, function($a, $b) use ($fields) {
-            foreach($fields as $field) {
-                $valueA = $a[$field];
-                $valueB = $b[$field];
-                if ($valueA != $valueB) {
-                    return ($valueA < $valueB) ? -1 : 1;
-                }
-            }
-            return 0;
-        });
-        
-        return $array;
     }
 }
